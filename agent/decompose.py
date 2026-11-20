@@ -204,11 +204,26 @@ rules below, which split "no proof of service" from "served late").
 
 Also extract the audit period the request asks about, as "period":
 {{"from_date": "YYYY-MM-DD", "to_date": "YYYY-MM-DD", "source_text": "<exact words from the request>"}}.
-Dates are inclusive and must be ISO. source_text must be copied verbatim, like a check's, and
-must contain BOTH the start date and the end date written out in full (e.g. "1 January 2026 to
-31 March 2026"). Only fill this in if the request states both dates. A named quarter or month
-("Q1 2026", "Jan-Mar"), a subject line, the email's sent date or a deadline is NOT enough --
-then set "period" to null. Never guess.
+Dates are inclusive and must be ISO. source_text must be copied verbatim, like a check's.
+Fill this in whenever the request states a FIXED window, in ANY of these ways -- quote the
+words verbatim and expand them yourself:
+  (a) both endpoint dates written out -- e.g. "1 January 2026 to 31 March 2026";
+  (b) a named calendar quarter or whole month(s) -- e.g. "Q2 2026", "June 2026",
+      "January to March 2026". Quarters are CALENDAR quarters (Q1 = Jan 1 - Mar 31,
+      Q2 = Apr 1 - Jun 30, Q3 = Jul 1 - Sep 30, Q4 = Oct 1 - Dec 31), and a month
+      means its first to its last day. So "Q2 2026" -> from_date 2026-04-01, to_date
+      2026-06-30.
+  (c) a calendar half-year -- "H1 2026" = Jan 1 - Jun 30 2026, "H2 2026" = Jul 1 - Dec 31 2026.
+  (d) a fiscal year, Indian convention -- "FY2026" / "FY 2025-26" = 1 April 2025 to
+      31 March 2026 (the fiscal year named N ends on 31 March of year N). A fiscal
+      quarter/half uses the same Apr-start year when "FY"/"fiscal" is explicit.
+  (e) a quarter or month range crossing a year boundary -- "Q4 2025 to Q1 2026" ->
+      from_date 2025-10-01, to_date 2026-03-31.
+  (f) a specific week or fortnight tied to a real date -- "first fortnight of November
+      2026" -> from_date 2026-11-01, to_date 2026-11-14.
+Set "period" to null for anything else -- relative wording ("last quarter", "previous
+month", "the past 30 days"), the email's sent date, a deadline, or a bare year/fiscal
+year with no month/quarter/half given. Never guess when unsure.
 
 Respond with ONLY a JSON object: {{"period": {{...}} or null, "checks": [...], "severity_order": [...], "severity_rules": [...]}}
 No text before or after the JSON.
@@ -258,6 +273,24 @@ _DATE_RES = [
 ]
 
 
+_QUOTE_CHARS = "\"'‘’“”«»‹›"
+
+
+def _unquote(s: str) -> str:
+    """Strip quote marks the model wrapped around a quoted span.
+
+    Asked to copy words verbatim, the model frequently returns them already
+    quoted -- source_text comes back as "'Q2 2026'" when the request itself just
+    says Q2 2026. The substring check then fails on the quote characters alone
+    and the whole run dies with "Could not find an explicit audit period".
+    Observed live on 3/3 attempts for that request. Also makes the quote render
+    cleanly in the UI, which was showing the stray characters."""
+    s = s.strip()
+    while len(s) >= 2 and s[0] in _QUOTE_CHARS and s[-1] in _QUOTE_CHARS:
+        s = s[1:-1].strip()
+    return s
+
+
 def _dates_in(text: str) -> set:
     """Every fully-written calendar date in `text`. Deterministic: this is what
     decides whether the model's quoted period really names a start and an end."""
@@ -272,27 +305,264 @@ def _dates_in(text: str) -> set:
     return found
 
 
-def _resolve_period(given: Optional[dict], extracted: Optional[PeriodSpec], request_text: str) -> tuple[dict, str]:
+_MONTH_NUM = {m: i for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], start=1)}
+# A month-year with an OPTIONAL leading day. The day group is what tells us this is a
+# single calendar date ("1 June 2026") rather than a whole-month span ("June 2026") --
+# without it, "1 June 2026" alone would be wrongly widened to all of June.
+_MONTH_YEAR_RE = rf"(?:(\d{{1,2}})(?:st|nd|rd|th)?\s+(?:of\s+)?)?({_MONTH})\.?,?\s+(\d{{4}})"
+_QUARTER_RE = r"\bQ([1-4])\s*,?\s*(?:of\s+)?(\d{4})\b"
+# "January to March 2026" -- two month names sharing one trailing year
+_MONTH_RANGE_RE = rf"\b({_MONTH})\.?\s*(?:to|through|until|–|—|-)\s*({_MONTH})\.?,?\s+(\d{{4}})\b"
+
+
+def _spans_in(text: str) -> set:
+    """Period *spans* a human can write without naming both endpoint dates:
+    calendar quarters ("Q2 2026") and whole months ("June 2026", "January to
+    March 2026"). Returns {(start_date, end_date)}.
+
+    Quarters are CALENDAR quarters (Q1 = Jan-Mar), matching this project's own
+    REQ-01 sample, whose subject says "Q1 2026" and whose period is
+    2026-01-01..2026-03-31. An Indian fiscal reading (Q1 = Apr-Jun) would
+    mis-parse that request, so it is deliberately not used.
+
+    Relative wording ("last quarter", "previous month") is deliberately NOT
+    handled: the audited window would silently depend on when the run happened,
+    which is wrong for a reproducible compliance record. Those still raise."""
+    from calendar import monthrange
+    from datetime import date
+    spans, month_only = set(), []
+
+    def span(y, m1, m2):
+        return date(y, m1, 1), date(y, m2, monthrange(y, m2)[1])
+
+    for m in re.finditer(_QUARTER_RE, text, flags=re.I):
+        q, y = int(m.group(1)), int(m.group(2))
+        spans.add(span(y, q * 3 - 2, q * 3))
+
+    for m in re.finditer(_MONTH_RANGE_RE, text, flags=re.I):
+        a, b, y = _MONTH_NUM[m.group(1)[:3].lower()], _MONTH_NUM[m.group(2)[:3].lower()], int(m.group(3))
+        if a <= b:
+            spans.add(span(y, a, b))
+
+    for m in re.finditer(_MONTH_YEAR_RE, text, flags=re.I):
+        if m.group(1):            # a day was given -- that's a date, not a month span
+            continue
+        mo, y = _MONTH_NUM[m.group(2)[:3].lower()], int(m.group(3))
+        s = span(y, mo, mo)
+        spans.add(s)
+        month_only.append(s)
+
+    # "January 2026 to March 2026" -- each month matched separately above; the
+    # whole stretch is the span the writer meant.
+    if len(month_only) >= 2:
+        spans.add((min(s for s, _ in month_only), max(e for _, e in month_only)))
+    return spans
+
+
+class _PeriodVerification(BaseModel):
+    has_period: bool
+    from_date: Optional[str] = None
+    to_date: Optional[str] = None
+
+
+_PERIOD_VERIFY_PROMPT = """You are given ONE short quoted phrase, in isolation, with no other
+context about the surrounding document. Decide whether this phrase, by itself, explicitly
+names a FIXED calendar period -- not relative to today, not guessed.
+
+Say has_period=true and give from_date/to_date (ISO YYYY-MM-DD, inclusive) ONLY if the phrase
+names an absolute period under one of these readings:
+- Both endpoint dates spelled out ("1 January 2026 to 31 March 2026").
+- A calendar quarter ("Q2 2026" = Apr 1 - Jun 30 2026; quarters are CALENDAR quarters
+  unless the phrase itself says "FY"/"fiscal").
+- A calendar half-year ("H1 2026" = Jan 1 - Jun 30 2026, "H2 2026" = Jul 1 - Dec 31 2026).
+- A whole month, or a month-to-month range sharing a year ("June 2026"; "January to March 2026").
+- A fiscal year, Indian convention ("FY2026" / "FY 2025-26" = 1 April 2025 - 31 March 2026 --
+  the fiscal year named N ends on 31 March of year N).
+- A fiscal quarter/half when "FY" or "fiscal" is explicit ("Q1 FY2026" = Apr 1 - Jun 30 2025).
+- A quarter range crossing a year boundary ("Q4 2025 to Q1 2026" = Oct 1 2025 - Mar 31 2026).
+- A specific week or fortnight tied to a real date ("the week of 3 November 2026",
+  "first fortnight of November 2026" = Nov 1-14 2026).
+
+Say has_period=false for ANYTHING else, including:
+- Relative wording whose meaning depends on when this is read ("last month", "previous
+  quarter", "next week", "the past 30 days", "today", "as of now").
+- A year or fiscal year alone with no month/quarter/half given, where the convention is
+  genuinely ambiguous.
+- Ordinary prose that does not name a period at all.
+
+Never guess a value you are not confident of. When unsure, has_period=false.
+
+Respond with ONLY a JSON object: {"has_period": true|false, "from_date": "YYYY-MM-DD" or null,
+"to_date": "YYYY-MM-DD" or null}. No text before or after.
+
+Phrase: """
+
+
+def _llm_period_from_quote(quoted_text: str) -> Optional[tuple]:
+    """Independent, isolated second opinion for phrasings the deterministic
+    recognizer (_dates_in/_spans_in) doesn't cover -- fiscal years, half-years,
+    cross-year quarter ranges, weeks/fortnights. Isolated on purpose: this call
+    sees ONLY the quoted span, never the rest of the request or what the
+    original extraction claimed, so it can't just rubber-stamp a hallucinated
+    date -- if the quote doesn't really name a period, this independently finds
+    nothing either, the same guarantee the regex gave for the forms it covered.
+
+    Returns (from_date, to_date) as date objects, or None if the phrase doesn't
+    name a fixed period (including on any call/parse failure -- fail safe into
+    "no period", never into guessing one)."""
+    from datetime import date
+    try:
+        raw = call_reasoning([
+            {"role": "system", "content": _PERIOD_VERIFY_PROMPT},
+            {"role": "user", "content": quoted_text},
+        ], reasoning_effort="low")
+        v = _PeriodVerification.model_validate(extract_json(raw))
+        if not v.has_period or not v.from_date or not v.to_date:
+            return None
+        f, t = date.fromisoformat(v.from_date), date.fromisoformat(v.to_date)
+        if f > t:
+            return None
+        return f, t
+    except Exception:
+        return None
+
+
+_NUMBER_WORDS = {"a": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+                 "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12}
+
+# "last 2 months", "past 6 weeks", "previous month", "last 7 days" -- deliberately NOT
+# matched when followed by "of"/"in"/etc ("the last week OF January" names an absolute
+# week inside a stated month, it isn't relative to today).
+_RELATIVE_RE = re.compile(
+    r"\b(?:last|past|previous)\s+"
+    r"(?:(\d{1,2}|a|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+)?"
+    r"(day|week|month)s?\b(?!\s+(?:of|in|starting|ending|from)\b)",
+    re.I,
+)
+_INCLUDE_CURRENT_RE = re.compile(
+    r"^\s*(?:,|and)?\s*(?:including|incl\.?|plus)\s+"
+    r"(?:this\s+(?:day|week|month)|the\s+current\s+(?:day|week|month)|today)\b",
+    re.I,
+)
+
+
+def _add_months(d, n: int):
+    from datetime import date
+    m0 = d.month - 1 + n
+    return date(d.year + m0 // 12, m0 % 12 + 1, 1)
+
+
+def _month_end(d):
+    from calendar import monthrange
+    from datetime import date
+    return date(d.year, d.month, monthrange(d.year, d.month)[1])
+
+
+def _resolve_relative_period(text: str, today=None) -> Optional[tuple]:
+    """"Last N days/weeks/months[, including this day/week/month]" resolved
+    deterministically against the REAL run date -- never asked of an LLM, which
+    has no reliable notion of "today". Not silent: the caller logs the returned
+    note, so re-running the same request text later visibly shows a different
+    window instead of quietly auditing the wrong one.
+
+    Default (no "including this <unit>"): the N complete units immediately
+    before the current one -- "last 2 months" run on any day in November means
+    all of September and October, never a partial November.
+    With "including this <unit>": the current (partial) unit through today,
+    plus N-1 more complete units before it -- "last 3 months including this
+    month" run on 20 Nov means September 1 through 20 November."""
+    from datetime import date, timedelta
+    today = today or date.today()
+    m = _RELATIVE_RE.search(text)
+    if not m:
+        return None
+    count_raw, unit = m.group(1), m.group(2).lower()
+    n = _NUMBER_WORDS.get((count_raw or "one").lower())
+    if n is None:
+        try:
+            n = int(count_raw)
+        except (TypeError, ValueError):
+            return None
+    if n < 1:
+        return None
+    tail = text[m.end():m.end() + 60]
+    inc_match = _INCLUDE_CURRENT_RE.match(tail)
+    quoted = m.group(0) + (tail[:inc_match.end()] if inc_match else "")
+
+    if unit == "month":
+        cur_start = date(today.year, today.month, 1)
+        if inc_match:
+            start, end = _add_months(cur_start, -(n - 1)), today
+        else:
+            start, end = _add_months(cur_start, -n), _month_end(_add_months(cur_start, -1))
+    elif unit == "week":
+        cur_monday = today - timedelta(days=today.weekday())
+        if inc_match:
+            start, end = cur_monday - timedelta(weeks=n - 1), today
+        else:
+            start, end = cur_monday - timedelta(weeks=n), cur_monday - timedelta(days=1)
+    else:  # day
+        if inc_match:
+            start, end = today - timedelta(days=n - 1), today
+        else:
+            start, end = today - timedelta(days=n), today - timedelta(days=1)
+
+    note = f"resolved as {quoted!r} relative to the run date {today.isoformat()}"
+    return start, end, note
+
+
+def _resolve_period(given: Optional[dict], extracted: Optional[PeriodSpec], request_text: str,
+                    today=None) -> tuple[dict, str]:
     """Caller-supplied dates always win. Otherwise use the model's extraction, but
-    only if it is verbatim in the request, parses as ISO dates and is in order."""
+    only if it is verbatim in the request, parses as ISO dates and is in order,
+    and the quoted words are independently confirmed to actually name that period.
+    Failing that, try resolving "last N days/weeks/months" deterministically
+    against the real run date. `today` is only ever overridden by tests."""
     from datetime import date
     if given and given.get("from") and given.get("to"):
         return {"from": given["from"], "to": given["to"]}, "entered"
     fail = ValueError("Could not find an explicit audit period in the request -- "
                       "enter the 'Period from' and 'Period to' dates and run again.")
-    if extracted is None or _normalize_ws(extracted.source_text) not in _normalize_ws(request_text):
-        raise fail
-    try:
-        f, t = date.fromisoformat(extracted.from_date), date.fromisoformat(extracted.to_date)
-    except ValueError:
-        raise fail
-    if f > t:
-        raise fail
-    # The quoted words themselves must contain both dates -- so "Q1 2026" in a
-    # subject line, or dates the model made up, can never become the period.
-    if not {f, t} <= _dates_in(extracted.source_text):
-        raise fail
-    return {"from": f.isoformat(), "to": t.isoformat()}, "extracted"
+
+    if extracted is not None:
+        extracted.source_text = _unquote(extracted.source_text)
+        if _normalize_ws(extracted.source_text) in _normalize_ws(request_text):
+            try:
+                f, t = date.fromisoformat(extracted.from_date), date.fromisoformat(extracted.to_date)
+            except ValueError:
+                f = t = None
+            if f and t and f <= t:
+                # Fast, free, deterministic path first -- covers the forms already proven
+                # out (plain dates, calendar quarters/months/month-ranges) with zero added
+                # latency or risk of an inconsistent LLM answer.
+                if {f, t} <= _dates_in(extracted.source_text) or (f, t) in _spans_in(extracted.source_text):
+                    return {"from": f.isoformat(), "to": t.isoformat()}, "extracted"
+                # The fast path didn't recognize this phrasing -- fall back to an isolated
+                # LLM re-verification (fiscal years, half-years, cross-year quarters,
+                # weeks/fortnights, and anything else a lender might write that no fixed
+                # regex enumerates). Its own dates are what's trusted here, not the
+                # original extraction's arithmetic -- the point of asking again in
+                # isolation is to not blindly reuse a number never actually re-derived
+                # from the quoted words.
+                verified = _llm_period_from_quote(extracted.source_text)
+                if verified is not None:
+                    vf, vt = verified
+                    return {"from": vf.isoformat(), "to": vt.isoformat()}, "extracted"
+
+    # Nothing absolute resolved (the model is told NOT to extract a period for relative
+    # wording, so `extracted` is usually None here anyway). Last resort: scan the raw
+    # text directly for "last/past/previous N days/weeks/months" and resolve it against
+    # the real run date -- deterministic code, never an LLM guess, since no model has a
+    # reliable notion of "today". Not silent: the returned note says exactly what was
+    # resolved and against what date, so re-running this same text next week visibly
+    # shows a different window instead of quietly auditing the wrong one.
+    relative = _resolve_relative_period(request_text, today=today)
+    if relative is not None:
+        start, end, note = relative
+        return {"from": start.isoformat(), "to": end.isoformat(), "note": note}, "extracted_relative"
+
+    raise fail
 
 
 def decompose_from_guidelines(guideline_ids: list, request_id: str, lender_id: str, period: Optional[dict],
@@ -337,6 +607,7 @@ def decompose(request_text: str, request_id: str, lender_id: str, period: Option
     normalized_request = _normalize_ws(request_text)
     checks, unsupported = [], []
     for c in parsed.checks:
+        c.source_text = _unquote(c.source_text)   # model often returns the span already quoted
         verbatim = _normalize_ws(c.source_text) in normalized_request
         if not verbatim:
             c.test = f"[UNVERIFIED QUOTE -- source_text not found verbatim] {c.test}"

@@ -54,6 +54,22 @@ def _chat(model, messages, temperature=1, top_p=0.95, max_tokens=4096, reasoning
     return content
 
 
+def call_with_tools(messages, tools, reasoning_effort="low", max_tokens=16000, **kw):
+    """Like call_reasoning(), but returns the raw assistant message (not just
+    .content) so the caller can see tool_calls / finish_reason. Used only by
+    agent/decompose_agent.py's tool-use loop -- the two existing call sites
+    (decompose.py, letter.py) stay on call_reasoning(), untouched, since they
+    never need a tool_calls turn and raising loudly on null content there is
+    exactly the right behavior for them."""
+    _require_key()
+    body = {"model": SARVAM_MODEL_REASONING, "messages": messages, "tools": tools,
+            "reasoning_effort": reasoning_effort, "max_tokens": max_tokens, **kw}
+    r = requests.post(f"{SARVAM_BASE_URL}/chat/completions", headers=_headers(), json=body, timeout=120)
+    r.raise_for_status()
+    choice = r.json()["choices"][0]
+    return choice["message"], choice.get("finish_reason")
+
+
 def call_reasoning(messages, reasoning_effort="low", max_tokens=16000, **kw):
     """Deepseek -- generic reasoning. Used by decompose.py (request -> checks.json).
     Higher max_tokens default than the base _chat(): this is a reasoning model whose

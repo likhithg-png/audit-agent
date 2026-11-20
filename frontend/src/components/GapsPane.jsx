@@ -48,7 +48,7 @@ export default function GapsPane({ requestId }) {
   const count = (k) => all.filter((r) => !k || r.status === k).length
 
   return (
-    <section className="pane">
+    <section className="pane" id="r-gaps">
       <div className="pane-head"><div><h2><span className="step">3</span>Results by account</h2><p className="pane-sub">One row per account and check. Click a row for the records behind it.</p></div></div>
       <div className="row">
         <select value={view} onChange={(e) => setView(e.target.value)}>

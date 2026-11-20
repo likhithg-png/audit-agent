@@ -11,14 +11,14 @@ export default function Overview({ requestId, summary, checks }) {
     { label: "Not applicable", value: sum("NOT_APPLICABLE") },
   ]
   return (
-    <section className="pane">
+    <section className="pane" id="r-result">
       <div className="pane-head">
         <div>
           <h2>Result</h2>
           <p className="pane-sub">Counts are account-check results ({requestId}).</p>
         </div>
         <a className="button primary" href={api.downloadUrl(requestId, "gap_report")} download>
-          Download full gap report (.xlsx)
+          Download gap report (.xlsx)
         </a>
       </div>
       <div className="tiles">

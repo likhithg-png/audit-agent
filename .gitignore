@@ -1,5 +1,7 @@
 .venv/
 out/
+out_agent_eval/
+eval/agent_checks/
 __pycache__/
 .pytest_cache/
 .env

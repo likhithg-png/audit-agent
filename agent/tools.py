@@ -173,15 +173,23 @@ class Tools:
 
     # ------------------------------------------------------------------ warehouse SQL (read-only)
     def sql(self, query: str) -> pd.DataFrame:
-        """Read-only SQL straight against Postgres. Tables are schema-qualified:
+        """Read-only SQL straight against Postgres, for LLM-written query text
+        (agent/decompose_agent.py's run_sql tool). Tables are schema-qualified:
         audit.accounts, audit.contact_log, audit.transcripts, audit.consent,
         audit.templates, audit.policy, audit.notices, audit.holidays,
-        audit.roster, audit.certificates."""
+        audit.roster, audit.certificates.
+
+        Read-only is enforced twice: this prefix/keyword check is a cheap first
+        pass that rejects the obvious cases with a clear message instead of a
+        raw Postgres error, but the real boundary is connect_readonly() below --
+        audit_readonly (sql/008_readonly_role.sql) has no INSERT/UPDATE/DELETE/DDL
+        grant on anything, so a query that slips past this string check still
+        can't write."""
         q = query.strip().lower()
         if not (q.startswith("select") or q.startswith("with")) or any(
                 w in q for w in [" insert ", " update ", " delete ", " drop ", " create ", " alter ", " copy "]):
             raise PermissionError("Only read-only SELECT queries are allowed")
-        with db.connect() as conn, conn.cursor() as cur:
+        with db.connect_readonly() as conn, conn.cursor() as cur:
             cur.execute(query)
             rows = cur.fetchall()
         return pd.DataFrame(rows)

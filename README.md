@@ -52,6 +52,17 @@ python -m scripts.load_to_postgres
 
 ## 4. Run the backend + frontend (the primary UI)
 
+**One command, once setup (steps 1-3) is done:**
+```bash
+./start.sh
+```
+Brings up Postgres (if it isn't already), then the API and frontend together.
+Ctrl+C stops the API and frontend; Postgres is left running since it's a real
+database, not a dev-reload process (`docker compose down` to stop that too).
+
+Or run the two pieces separately (useful for watching one's logs on its own,
+or restarting just one):
+
 In one terminal:
 ```bash
 source .venv/bin/activate
@@ -164,8 +175,10 @@ scripted for you:
    reply -- it never deletes, archives, or auto-sends anything) -> you're
    redirected back to the app.
 8. Click **Refresh inbox** to list candidate emails (matches
-   `GMAIL_SEARCH_QUERY`, default: subject contains audit/compliance/annexure
-   within the last 180 days), pick one, choose which lender's sample to test
+   `GMAIL_SEARCH_QUERY`, default: any incoming mail within the last 180 days
+   -- no subject keyword required since Step 15; Prism classifies each one as
+   a real audit request or not, so a genuine request with a blank/off-topic
+   subject still gets caught), pick one, choose which lender's sample to test
    against, and run the agent. Each email gets a status chip (New ->
    Processing -> Needs review -> Replied, or Error) that persists across
    refreshes -- an email you've already run or replied to no longer looks
@@ -207,7 +220,7 @@ reference; the primary UI is now the one in step 4.
 | `GOOGLE_CLIENT_SECRET` | (none) | Gmail OAuth client secret |
 | `GOOGLE_REDIRECT_URI` | `http://localhost:8000/api/inbox/oauth/callback` | must match the redirect URI registered in Google Cloud Console |
 | `FRONTEND_URL` | `http://localhost:5173` | where the OAuth callback redirects back to after connecting |
-| `GMAIL_SEARCH_QUERY` | `subject:(audit OR compliance OR annexure OR "audit request") newer_than:180d` | Gmail search used to list candidate emails |
+| `GMAIL_SEARCH_QUERY` | `newer_than:180d` | Gmail search used to list candidate emails -- no subject keyword filter since Step 15, Prism classifies instead |
 
 ## Layout
 ```

@@ -23,6 +23,13 @@ export const api = {
   startInboxRun: (messageId, formData) =>
     fetch(`${BASE}/inbox/messages/${messageId}/run`, { method: "POST", body: formData }).then(json),
 
+  getAutoReply: () => fetch(`${BASE}/inbox/auto-reply`).then(json),
+  setAutoReply: (enabled) => {
+    const fd = new FormData()
+    fd.set("enabled", enabled)
+    return fetch(`${BASE}/inbox/auto-reply`, { method: "POST", body: fd }).then(json)
+  },
+
   getStatus: (id) => fetch(`${BASE}/requests/${id}/status`).then(json),
   getResult: (id) => fetch(`${BASE}/requests/${id}/result`).then(json),
   getGaps: (id, { checkType, severity } = {}) => {

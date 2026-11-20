@@ -22,9 +22,14 @@ machinery (decompose -> run_checks -> pack -> letter), keyed by request_id:
        GET  /api/inbox/oauth/callback
        GET  /api/inbox/messages
        POST /api/inbox/messages/{message_id}/run
-       POST /api/requests/{id}/send-reply    -- sends the (human-reviewed, editable) letter back to
-                                                 the original sender. ONLY reachable via an explicit
-                                                 button click in the UI -- nothing here auto-sends.
+       POST /api/requests/{id}/send-reply    -- sends the (human-reviewed, editable) FINAL letter back
+                                                 to the original sender. ONLY reachable via an explicit
+                                                 button click in the UI -- this one never auto-sends.
+                                                 The one exception to "nothing auto-sends": a run that
+                                                 ends in needs_clarification auto-replies with the
+                                                 question itself, no click required (_auto_reply_with_
+                                                 clarification) -- it asserts nothing about the account,
+                                                 it only asks for missing scope/period/severity-scale.
 
 Shared, once a job is started under some request_id:
   GET /api/requests/{id}/status             -- poll: status + step log
@@ -50,7 +55,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 import pandas as pd
 
-from agent import gmail_client, inbox_runs, run_results
+from agent import gmail_client, inbox_runs, run_results, settings
 from agent.config import DATA_DIR, FRONTEND_URL, OUT_DIR
 from agent.decompose import decompose, decompose_from_guidelines
 from agent.letter import draft_and_validate
@@ -119,15 +124,117 @@ def _append_log(request_id: str, msg: str):
         _jobs[request_id]["log"].append(msg)
 
 
+def _describe_tool_call(t: dict) -> str:
+    """One plain-English line for a tool call in the run log.
+
+    The log is read by whoever is running the audit, not by a developer -- the
+    old f"agent called {tool}({args})" form leaked Python dict reprs and raw SQL
+    ({'query': "SELECT ... WHERE table_schema='audit'"}) straight into that view.
+    The exact SQL is still kept in `agent_trace` in checks.json and shown in the
+    UI's expandable trace, so nothing is hidden, just not shouted."""
+    a = t.get("args") or {}
+    tool = t.get("tool")
+    if tool == "query_accounts":
+        ids = a.get("account_ids") or []
+        if not ids:
+            return "Checked the account ids named in the request"
+        if len(ids) == 1:
+            return f"Checked account {ids[0]} exists"
+        shown = ", ".join(ids[:3]) + (f" +{len(ids) - 3} more" if len(ids) > 3 else "")
+        return f"Checked {len(ids)} account ids exist: {shown}"
+    if tool == "lookup_policy":
+        return f"Looked up {a.get('lender_id') or 'the lender'}'s policy rules"
+    if tool == "list_guidelines":
+        return "Looked up the guideline catalogue"
+    if tool == "run_sql":
+        return "Queried the audit data directly"
+    if tool == "ask_clarifying_question":
+        return "Stopped to ask for clarification instead of guessing"
+    if tool == "_fell_back_to_one_shot":
+        return "Investigation ran out of rounds -- used the one-shot extractor instead"
+    return str(tool or "tool call")
+
+
+AUTO_REPLY_SETTING_KEY = "auto_reply_clarification"
+
+
+def _auto_reply_with_clarification(request_id: str, clarification: str) -> None:
+    """A clarifying question is low-risk content -- it asserts nothing about the
+    account, it only asks for the scope/period/severity-scale a human would
+    otherwise have to type back manually. Sent automatically, unlike the final
+    evidence-pack letter (api/main.py's module docstring), which always stays a
+    manual, reviewed send -- that distinction is the point, not an oversight.
+    Gated on AUTO_REPLY_SETTING_KEY (the toggle next to "Check for new mail"):
+    off means a human reviews and sends it themselves, same as before this
+    existed. No-op for non-Gmail runs (sample/upload have no originating
+    email at all)."""
+    if not request_id.startswith("GMAIL-"):
+        return
+    message_id = request_id.removeprefix("GMAIL-")
+    if not settings.get_bool(AUTO_REPLY_SETTING_KEY, default=True):
+        _append_log(request_id, "Auto-reply is turned off -- review and send this yourself.")
+        inbox_runs.mark_needs_review(message_id)
+        return
+    reply_meta = _job(request_id).get("reply_meta") or run_results.reply_meta(request_id)
+    if not reply_meta:
+        inbox_runs.mark_error(message_id, "needs clarification, but has no originating email to reply to")
+        return
+    try:
+        gmail_client.send_reply(
+            to=reply_meta["from"], subject=reply_meta["subject"], body_text=clarification,
+            thread_id=reply_meta.get("thread_id"), in_reply_to=reply_meta.get("message_id_header"),
+            attachments=[],
+        )
+        _set(request_id, replied=True)
+        run_results.mark_replied(request_id)
+        inbox_runs.mark_replied(message_id)
+        _append_log(request_id, f"Sent the clarifying question to {reply_meta['from']}")
+    except Exception as e:
+        _append_log(request_id, f"Could not send the clarifying question automatically: {e}")
+        inbox_runs.mark_error(message_id, f"could not auto-send the clarifying question: {e}")
+
+
 def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sample_file: str, source: str,
-             guideline_ids: list | None = None, recipient_name: str | None = None):
+             guideline_ids: list | None = None, recipient_name: str | None = None, use_agent: bool = True):
     """The one pipeline every entry point (sample picker / upload / Gmail)
-    ultimately calls, just with a different source for `text`."""
+    ultimately calls, just with a different source for `text`.
+
+    use_agent: default True as of Step 14 -- eval/eval_decompose_agent.py
+    measured decompose_with_tools() as identical to the one-shot baseline on
+    REQ-01/02/03 (same gap recall, false-gap rate, severity/status accuracy),
+    so the tool-using path is now what the sample picker / upload / Gmail
+    entry points all use unless a caller explicitly opts out with
+    use_agent=False. Only applies when there's request text to investigate --
+    a guideline-only run has no ambiguity to resolve, so it always uses
+    decompose_from_guidelines regardless of this flag."""
     try:
         _append_log(request_id, "Decomposing the request...")
         if text and text.strip():
-            decomposed = decompose(request_text=text, request_id=request_id, lender_id=lender_id,
-                                    period=period, sample_file=sample_file, source=source)
+            if use_agent:
+                _append_log(request_id, "Using the tool-using agent (may look up guidelines/policy/accounts "
+                                         "before committing to checks)...")
+                from agent.decompose_agent import decompose_with_tools
+                decomposed = decompose_with_tools(request_text=text, request_id=request_id, lender_id=lender_id,
+                                                  period=period, sample_file=sample_file, source=source)
+                if "needs_clarification" in decomposed:
+                    for t in decomposed.get("agent_trace", []):
+                        _append_log(request_id, f"  {_describe_tool_call(t)}")
+                    # The full question goes in its own field, not into the error string:
+                    # it used to be pasted into both the log line and the raised error, so
+                    # a paragraph-long question rendered twice in red.
+                    clarification = decomposed["needs_clarification"]
+                    _set(request_id, clarification=clarification, status="error",
+                         error="The agent needs more information before it can run this request.")
+                    _append_log(request_id, "Error: The agent needs more information before it can run this request.")
+                    _auto_reply_with_clarification(request_id, clarification)
+                    return
+                # kept in `decomposed` (not popped) -- it's written into checks.json below,
+                # so the investigation trail survives the run, not just these log lines
+                for t in decomposed.get("agent_trace", []):
+                    _append_log(request_id, f"  {_describe_tool_call(t)}")
+            else:
+                decomposed = decompose(request_text=text, request_id=request_id, lender_id=lender_id,
+                                        period=period, sample_file=sample_file, source=source)
             if guideline_ids:
                 _append_log(request_id, f"Adding {len(guideline_ids)} selected guideline(s) to the "
                                          f"{len(decomposed['checks'])} check(s) found in the request")
@@ -141,9 +248,26 @@ def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sa
         decomposed_path.write_text(json.dumps(decomposed, indent=2))
         _append_log(request_id, f"Extracted {len(decomposed['checks'])} checks, "
                                  f"{len(decomposed['unsupported'])} unsupported")
+        # With no checks there is nothing to run, and run_checks' empty pivot used to
+        # surface as a bare KeyError ("Error: 'account_id'") that said nothing useful.
+        if not decomposed["checks"]:
+            unsupported = decomposed.get("unsupported") or []
+            detail = (f" The request mentioned {len(unsupported)} requirement(s) that don't map to a check "
+                      f"this agent can run." if unsupported else "")
+            raise ValueError(
+                "No runnable checks could be read from this request." + detail +
+                " Name the checks explicitly (e.g. 'calling hours, call frequency, WhatsApp consent'), "
+                "or pick them from the Guidelines list.")
         pr = decomposed["period"]
-        _append_log(request_id, f"Audit period: {pr['from']} to {pr['to']} "
-                                 f"({'from the request' if decomposed['period_source'] == 'extracted' else 'as entered'})")
+        if decomposed["period_source"] == "extracted_relative":
+            # Resolved from relative wording ("last 2 months") against the real run date --
+            # say so plainly; re-running this same text later will legitimately shift the
+            # window, and that must never look like a silent inconsistency.
+            period_note = pr.get("note", "resolved relative to the run date")
+            _append_log(request_id, f"Audit period: {pr['from']} to {pr['to']} ({period_note})")
+        else:
+            _append_log(request_id, f"Audit period: {pr['from']} to {pr['to']} "
+                                     f"({'from the request' if decomposed['period_source'] == 'extracted' else 'as entered'})")
 
         _append_log(request_id, "Running checks against the sample...")
         vdf = run(decomposed_path, tools=Tools(), verbose=False)
@@ -319,6 +443,8 @@ async def start_custom_run(
     lender_id: str | None = Form(None),
     text: str | None = Form(None),
     guideline_ids: str | None = Form(None),   # comma-separated; used when the request names no checks
+    use_agent: bool = Form(True),              # default on since Step 14 -- see _execute() docstring; the
+                                                # UploadPane checkbox now opts OUT ("skip investigation")
     file: UploadFile | None = File(None),
     accounts_file: UploadFile | None = File(None),
 ):
@@ -348,7 +474,7 @@ async def start_custom_run(
     lender_id, sample_file = _resolve_sample(request_id, lender_id or None, ann, accounts_file.filename if accounts_file else None, request_text_)
     _start(request_id, background_tasks, text=request_text_, lender_id=lender_id,
            period=_period_arg(period_from, period_to), sample_file=sample_file, source=source,
-           guideline_ids=gids)
+           guideline_ids=gids, use_agent=use_agent)
     return {"request_id": request_id, "status": "running"}
 
 
@@ -359,6 +485,17 @@ def inbox_status():
     if not gmail_client.is_configured():
         return {"configured": False, "connected": False}
     return {"configured": True, "connected": gmail_client.is_connected()}
+
+
+@app.get("/api/inbox/auto-reply")
+def get_auto_reply_setting():
+    return {"enabled": settings.get_bool(AUTO_REPLY_SETTING_KEY, default=True)}
+
+
+@app.post("/api/inbox/auto-reply")
+def set_auto_reply_setting(enabled: bool = Form(...)):
+    settings.set_bool(AUTO_REPLY_SETTING_KEY, enabled)
+    return {"enabled": enabled}
 
 
 @app.get("/api/inbox/auth-url")
@@ -388,6 +525,15 @@ def _begin_gmail_run(message_id: str, background_tasks: BackgroundTasks, lender_
     request_id = f"GMAIL-{message_id}"
     if text is None:
         text = gmail_client.get_message_text(message_id)
+    # A real audit request usually attaches its Annexure A rather than listing ids inline.
+    # Nothing in the Gmail path used to look for it, so those requests had no accounts at all.
+    if accounts_bytes is None:
+        try:
+            found = gmail_client.find_account_list(message_id)
+        except Exception:
+            found = None
+        if found:
+            accounts_name, accounts_bytes = found
     lender_id, sample_file = _resolve_sample(request_id, lender_id, accounts_bytes, accounts_name, text)
     # fetched fresh from Gmail, not trusted from the client -- this is who
     # /send-reply will actually send to later, once a human approves it.
@@ -397,15 +543,22 @@ def _begin_gmail_run(message_id: str, background_tasks: BackgroundTasks, lender_
            source=f"gmail:{message_id}", recipient_name=reply_meta.get("from_name") or None)
     _set(request_id, reply_meta=reply_meta, replied=False)
     run_results.save_reply_meta(request_id, reply_meta)
+    run_results.reset_replied(request_id)
     inbox_runs.mark_processing(message_id, request_id)
     return request_id
 
 
 def _try_autostart(message_id: str, background_tasks: BackgroundTasks) -> bool:
-    """Auto-starts a run with no human click -- but ONLY when the email body
-    itself names real account ids (agent/decompose.py-adjacent regex,
-    \\bACC\\d+\\b). There's no human in this path to attach an account list,
-    so a message with no inline ids just stays NEW for manual handling.
+    """Auto-starts a run with no human click -- but ONLY when the email actually
+    carries something to test against: either the body names account ids
+    (\\bACC\\d+\\b) or it attaches an Annexure A spreadsheet. There's no human in
+    this path to supply an account list, so an email with neither stays NEW for
+    manual handling rather than auto-starting a run that can only fail.
+
+    This gate is deliberately NOT just "Prism said it's an audit request":
+    Prism scores whether the PROSE reads like a real request, which says nothing
+    about whether the accounts to test are reachable. Dropping it would turn
+    "quietly not started" into a run that errors out on 'no accounts to test'.
     Never lets one bad auto-start attempt break the whole /messages response."""
     import re
     try:
@@ -413,7 +566,11 @@ def _try_autostart(message_id: str, background_tasks: BackgroundTasks) -> bool:
     except Exception:
         return False
     if not re.search(r"\bACC\d+\b", text, re.I):
-        return False
+        try:
+            if gmail_client.find_account_list(message_id) is None:
+                return False
+        except Exception:
+            return False
     try:
         _begin_gmail_run(message_id, background_tasks, text=text)
         return True
@@ -495,7 +652,20 @@ def send_reply(request_id: str, body: str = Form(...), attach: str | None = Form
 @app.get("/api/requests/{request_id}/status")
 def run_status(request_id: str):
     job = _job(request_id)
-    return {"status": job["status"], "log": job["log"], "error": job["error"]}
+    # `clarification` is NOT a failure in the usual sense -- the agent investigated and
+    # decided it would rather ask than guess (ask_clarifying_question). It's surfaced
+    # separately so the UI can present it as a question to answer, not a red error.
+    # `reply_meta` is captured at the START of every Gmail run (_begin_gmail_run), before
+    # decompose even runs, so it's already here even on a clarification/error outcome --
+    # that's what lets the UI offer to send the clarifying question straight back to the
+    # sender instead of making a human leave the app and retype it into their own client.
+    reply_meta = job.get("reply_meta") or run_results.reply_meta(request_id)
+    # in-memory first, then persisted -- same reasoning as send_reply()'s own check:
+    # "already sent" must survive an API restart, not just this process's lifetime.
+    persisted = run_results.load(request_id) or {}
+    return {"status": job["status"], "log": job["log"], "error": job["error"],
+            "clarification": job.get("clarification"), "reply_to": (reply_meta or {}).get("from"),
+            "replied": job.get("replied", False) or bool(persisted.get("replied"))}
 
 
 @app.get("/api/requests/{request_id}/result")
@@ -508,6 +678,15 @@ def run_result(request_id: str):
         decomposed = job["result"]["decomposed"]
         letter = job["result"]["letter"]
         reply_meta, replied = job.get("reply_meta"), job.get("replied", False)
+    elif job["status"] in ("error", "running"):
+        # Never fall through to the persisted copy when we KNOW this run failed or is
+        # still going. A request_id is a stable slot (GMAIL-<id> especially, via "Run
+        # again"), so a failed re-run would otherwise serve the PREVIOUS run's letter
+        # as if it were this one's -- while checks.json on disk has already been
+        # overwritten by the failed run. That mix renders as new checks beside an old
+        # letter, with Send reply enabled: a reviewer could mail a lender a letter that
+        # does not describe the run they are looking at.
+        raise HTTPException(409, f"run is not done (status={job['status']})")
     elif persisted and persisted.get("letter_text") and (od / "checks.json").exists():
         # The API restarted since this run finished -- in-memory _jobs is gone,
         # but everything needed is on disk + in audit.run_results. Without this
@@ -529,22 +708,34 @@ def run_result(request_id: str):
         row["check"] = labels.get(row.get("check_id"), row.get("check_type"))
     checks_out = [dict(c, check_label=check_label(c)) for c in decomposed["checks"]]
 
+    # Scorecard only exists for REQ-01/02/03 -- they're the only requests with ground truth.
+    # Scoped to THIS request_id specifically: eval.score.score()'s "overall" is a blend across
+    # every out/REQ-*/ on disk, which previously got shown unchanged on every run's result page
+    # (custom uploads, Gmail runs included) -- meaningless for those, and even for REQ-01/02/03
+    # it was never actually that request's own number. Rebuilt here from per_check's per-check
+    # counts (true_gaps/found/false_gaps/unsupported_claims), summed for just this request_id.
     score = None
-    gt_path = DATA_DIR / "ground_truth" / "ground_truth_account_check.csv"
-    if gt_path.exists():
+    if request_id in SAMPLE_REQUESTS:
         try:
             from eval.score import score as run_score
-            overall, per_check, _ = run_score(verbose=False)
-            score = {"recall": float(overall.recall), "false_gap_rate": float(overall.false_gap_rate),
-                     "unsupported_claims": int(overall.unsupported_claims)}
+            _, per_check, _ = run_score(verbose=False)
             if request_id in per_check.index.get_level_values(0):
-                score["per_check"] = per_check.loc[request_id].reset_index().to_dict("records")
+                rid_rows = per_check.loc[request_id]
+                tg, found, fp = rid_rows["true_gaps"].sum(), rid_rows["found"].sum(), rid_rows["false_gaps"].sum()
+                pg = found + fp
+                score = {
+                    "recall": float(found / tg) if tg else 1.0,
+                    "false_gap_rate": float(fp / pg) if pg else 0.0,
+                    "unsupported_claims": int(rid_rows["unsupported_claims"].sum()),
+                    "per_check": rid_rows.reset_index().to_dict("records"),
+                }
         except Exception as e:
             score = {"error": str(e)}
 
     return {
         "request_id": request_id,
-        "decomposed": {"checks": checks_out, "unsupported": decomposed["unsupported"]},
+        "decomposed": {"checks": checks_out, "unsupported": decomposed["unsupported"],
+                       "agent_trace": decomposed.get("agent_trace", [])},
         "summary": summary,
         "letter": {"text": letter["text"], "needs_human_review": letter["needs_human_review"],
                    "validation": letter["validation"]},

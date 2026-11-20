@@ -38,10 +38,10 @@ export default function ReplyPane({ requestId, letter, replyTo, replied: replied
   }
 
   return (
-    <section className="pane">
+    <section className="pane" id="r-letter">
       <div className="pane-head">
         <div>
-          <h2><span className="step">5</span>Send reply</h2>
+          <h2><span className="step">4</span>Send reply</h2>
           <p className="pane-sub">To <strong>{replyTo}</strong> — a manual, one-time action.</p>
         </div>
         {!sent && (
@@ -55,6 +55,11 @@ export default function ReplyPane({ requestId, letter, replyTo, replied: replied
         <p className="badge success">Reply sent to {replyTo}.</p>
       ) : (
         <>
+          {letter.needs_human_review ? (
+            <p className="badge warning">Needs human review: {letter.validation.reasons.join("; ")}</p>
+          ) : (
+            <p className="badge success">Validator passed — every claim cites the summary, no softening language, DRAFT disclaimer present.</p>
+          )}
           {editing ? (
             <textarea className="paste-box" rows={16} value={draft} onChange={(e) => setDraft(e.target.value)} disabled={sending} />
           ) : (

@@ -140,14 +140,52 @@ def _find_part(payload, mime_type):
     return None
 
 
-def _find_pdf_attachment(payload):
-    if payload.get("filename", "").lower().endswith(".pdf") and payload.get("body", {}).get("attachmentId"):
-        return payload["filename"], payload["body"]["attachmentId"]
+ACCOUNT_LIST_EXT = (".csv", ".xlsx", ".xls")
+# This app's own evidence-pack filenames. A reply we sent can land back in the same
+# mailbox (self-addressed test mail, a mailing list, an auto-forward), and gap_report.xlsx
+# is a spreadsheet -- without this it would be picked up as if it were an Annexure A,
+# i.e. the agent's own output fed back in as its next input.
+OWN_ARTIFACTS = ("gap_report.xlsx", "request_interpretation.md", "response_letter_DRAFT.docx")
+
+
+def _find_attachment(payload, exts, skip_names=()):
+    """First attachment whose filename ends in one of `exts`, searched depth-first."""
+    fn = payload.get("filename", "")
+    if (fn.lower().endswith(exts) and fn.lower() not in [s.lower() for s in skip_names]
+            and payload.get("body", {}).get("attachmentId")):
+        return fn, payload["body"]["attachmentId"]
     for part in payload.get("parts", []) or []:
-        found = _find_pdf_attachment(part)
+        found = _find_attachment(part, exts, skip_names)
         if found:
             return found
     return None
+
+
+def _find_pdf_attachment(payload):
+    return _find_attachment(payload, (".pdf",))
+
+
+def _download(svc, message_id: str, attachment_id: str) -> bytes:
+    att = svc.users().messages().attachments().get(userId="me", messageId=message_id, id=attachment_id).execute()
+    return base64.urlsafe_b64decode(att["data"])
+
+
+def find_account_list(message_id: str):
+    """The Annexure A spreadsheet a real audit request attaches (.csv/.xlsx/.xls).
+    Returns (filename, bytes) or None.
+
+    Deliberately separate from get_message_text(): that reads the request PROSE
+    (and prefers a PDF letter), while this is the list of accounts to test. An
+    email whose account ids live only in a spreadsheet attachment used to be
+    untestable from the inbox -- the ids were never in the text, so neither the
+    auto-start regex nor _resolve_sample could find anything."""
+    svc = _service()
+    msg = svc.users().messages().get(userId="me", id=message_id, format="full").execute()
+    found = _find_attachment(msg["payload"], ACCOUNT_LIST_EXT, skip_names=OWN_ARTIFACTS)
+    if not found:
+        return None
+    filename, attachment_id = found
+    return filename, _download(svc, message_id, attachment_id)
 
 
 def own_address() -> str:

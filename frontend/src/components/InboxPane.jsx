@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react"
 import { api } from "../api"
-import PeriodFields from "./PeriodFields"
-import AccountsField from "./AccountsField"
 
 const STATUS_CHIP = {
   NEW: { label: "New", cls: "chip-neutral" },
@@ -16,64 +14,100 @@ function StatusChip({ status }) {
   return <span className={`chip ${chip.cls}`}>{chip.label}</span>
 }
 
-function MessageRow({ msg, running, onStarted, onView, onError }) {
-  const [accountsFile, setAccountsFile] = useState(null)
-  const [periodFrom, setPeriodFrom] = useState("")
-  const [periodTo, setPeriodTo] = useState("")
-  const [open, setOpen] = useState(false)
-  // No account list needed if the email body itself names real account ids --
-  // the backend falls back to scanning the text for them. Just keep the period
-  // fields paired (both or neither); let the server reject it if there's
-  // genuinely nothing to test against.
-  const canRun = !!periodFrom === !!periodTo
-  const alreadyRan = ["NEEDS_REVIEW", "ERROR", "REPLIED"].includes(msg.status)
+// `from` arrives as a raw header: '"Pannaga N (Work)" <pannaga.n@creditnirvana.ai>'.
+// Showing it whole is what used to overflow the row -- split it so the name can lead
+// and the address can be dropped to a title tooltip.
+function parseFrom(raw = "") {
+  const m = raw.match(/^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/)
+  if (m) return { name: m[1].trim() || m[2], email: m[2] }
+  return { name: raw.trim(), email: raw.trim() }
+}
 
+// "Fri, 20 Nov 2026 08:01:49 +0530" -> "20 Nov, 08:01" (or the year if it's not this year).
+function shortDate(raw = "") {
+  const d = new Date(raw)
+  if (isNaN(d)) return raw
+  const now = new Date()
+  const sameYear = d.getFullYear() === now.getFullYear()
+  const day = d.toLocaleDateString(undefined, { day: "numeric", month: "short" })
+  return sameYear
+    ? `${day}, ${d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`
+    : `${day} ${d.getFullYear()}`
+}
+
+function Confidence({ value }) {
+  if (value === null || value === undefined) return null
+  const pct = Math.round(value * 100)
+  return (
+    <span className="conf" title={`${pct}% likely a genuine audit request`}>
+      <span className="conf-bar">
+        <span className={`conf-fill ${pct < 50 ? "low" : ""}`} style={{ width: `${pct}%` }} />
+      </span>
+      {pct}%
+    </span>
+  )
+}
+
+function MessageRow({ msg, running, onStarted, onView, onError }) {
+  const [open, setOpen] = useState(false)
+  const alreadyRan = ["NEEDS_REVIEW", "ERROR", "REPLIED"].includes(msg.status)
+  // A row auto-started by the low confidence bar is already running in the background
+  // (it has a request_id the moment mark_processing() sets it) -- clicking in should
+  // jump straight to that live run log, not offer to start a second, redundant run
+  // that would just 409 against the one already in progress.
+  const isProcessing = msg.status === "PROCESSING"
+
+  // No account list or period fields here -- a Gmail-sourced run always has the real
+  // email to read both from (same fallback the auto-start path already uses); an
+  // override UI was never needed for this entry point, only for upload/paste where
+  // there's no email to fall back to.
   async function submit() {
-    const fd = new FormData()
-    if (accountsFile) fd.set("accounts_file", accountsFile)
-    if (periodFrom) fd.set("period_from", periodFrom)
-    if (periodTo) fd.set("period_to", periodTo)
     try {
-      const { request_id } = await api.startInboxRun(msg.message_id, fd)
+      const { request_id } = await api.startInboxRun(msg.message_id, new FormData())
       onStarted(request_id)
     } catch (e) {
       onError(e.message)
     }
   }
 
+  const { name, email } = parseFrom(msg.from)
+  const subject = (msg.subject || "").trim()
+
   return (
     <div className={`inbox-row ${open ? "open" : ""}`}>
       <div className="inbox-row-main" onClick={() => setOpen((v) => !v)}>
-        <div>
-          <span className="inbox-subject">{msg.subject}</span>
-          <p className="muted small">{msg.from} -- {msg.date}</p>
-          <p className="muted small">{msg.snippet}</p>
-          {msg.is_audit_request !== null && msg.is_audit_request !== undefined && (
-            <p className="muted small">{Math.round(msg.confidence * 100)}% likely an audit request</p>
-          )}
+        <div className="inbox-text">
+          <span className={`inbox-subject ${subject ? "" : "none"}`} title={subject || undefined}>
+            {subject || "(no subject)"}
+          </span>
+          <div className="inbox-meta">
+            <span className="inbox-sender" title={email}>{name}</span>
+            <span className="inbox-date">{shortDate(msg.date)}</span>
+          </div>
+          {msg.snippet && <p className="inbox-snippet">{msg.snippet}</p>}
         </div>
-        <div className="inbox-row-badges">
-          {msg.has_pdf && <span className="badge-pill">PDF attached</span>}
+        <div className="inbox-side">
           <StatusChip status={msg.status} />
+          {msg.has_pdf && <span className="badge-pill">PDF</span>}
+          <Confidence value={msg.confidence} />
         </div>
       </div>
       {open && (
         <div className="inbox-row-run">
-          {alreadyRan && msg.request_id && (
-            <button onClick={() => onView(msg.request_id)} style={{ marginBottom: 10 }}>
-              {msg.status === "ERROR" ? "View error log" : "View result"}
-            </button>
+          {isProcessing ? (
+            <button className="primary" onClick={() => onView(msg.request_id)}>View progress</button>
+          ) : (
+            <>
+              {alreadyRan && msg.request_id && (
+                <button onClick={() => onView(msg.request_id)}>
+                  {msg.status === "ERROR" ? "View error log" : "View result"}
+                </button>
+              )}
+              <button className="primary" onClick={submit} disabled={running}>
+                {running ? "Running..." : alreadyRan ? "Run again" : "Run agent on this email"}
+              </button>
+            </>
           )}
-          <p className="muted small">
-            Optional -- leave blank if the email itself names the account ids (e.g. ACC100001); only attach a
-            list to test a different set.
-          </p>
-          <AccountsField file={accountsFile} setFile={setAccountsFile} disabled={running} />
-          <PeriodFields
-        periodFrom={periodFrom} setPeriodFrom={setPeriodFrom} periodTo={periodTo} setPeriodTo={setPeriodTo} />
-          <button className="primary" onClick={submit} disabled={!canRun || running}>
-            {running ? "Running..." : alreadyRan ? "Run again" : "Run agent on this email"}
-          </button>
         </div>
       )}
     </div>
@@ -92,12 +126,16 @@ export default function InboxPane({ running, onStarted, onView, onError }) {
   const [messages, setMessages] = useState(null)
   const [loading, setLoading] = useState(false)
   const [filter, setFilter] = useState("ALL")
+  const [autoReply, setAutoReply] = useState(null)
 
   // Opening the tab reads the saved list from the database -- no Gmail call.
   useEffect(() => {
     api.inboxStatus().then((st) => {
       setStatus(st)
-      if (st.connected) load(false)
+      if (st.connected) {
+        load(false)
+        api.getAutoReply().then((r) => setAutoReply(r.enabled)).catch(() => {})
+      }
     }).catch((e) => onError(e.message))
   }, [])
 
@@ -106,6 +144,19 @@ export default function InboxPane({ running, onStarted, onView, onError }) {
       const { url } = await api.inboxAuthUrl()
       window.location.href = url
     } catch (e) {
+      onError(e.message)
+    }
+  }
+
+  // Persisted server-side (audit.app_settings), not just local UI state -- it decides
+  // real behavior in the background auto-start path, which has no browser tab open at all.
+  async function toggleAutoReply() {
+    const next = !autoReply
+    setAutoReply(next)
+    try {
+      await api.setAutoReply(next)
+    } catch (e) {
+      setAutoReply(!next)
       onError(e.message)
     }
   }
@@ -158,9 +209,17 @@ export default function InboxPane({ running, onStarted, onView, onError }) {
             names account ids starts processing by itself.
           </p>
         </div>
-        <button className="primary" onClick={() => load(true)} disabled={loading}>
-          {loading ? "Checking..." : "Check for new mail"}
-        </button>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+          <button className="primary" onClick={() => load(true)} disabled={loading}>
+            {loading ? "Checking..." : "Check for new mail"}
+          </button>
+          {autoReply !== null && (
+            <label className="attach-opt" title="When off, a clarifying question waits for you to review and send it yourself instead of going out on its own.">
+              <input type="checkbox" checked={autoReply} onChange={toggleAutoReply} />
+              <span>Auto-send clarifying questions</span>
+            </label>
+          )}
+        </div>
       </div>
 
       <div className="inbox-toolbar">

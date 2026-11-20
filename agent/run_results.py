@@ -55,6 +55,19 @@ def mark_replied(request_id: str) -> None:
         conn.commit()
 
 
+def reset_replied(request_id: str) -> None:
+    """Called when a run restarts for this request_id (a human can click "Run
+    again" on a message that's already REPLIED, e.g. after answering its own
+    clarifying question). save_reply_meta()'s UPSERT only touches the reply_to/
+    subject/thread columns -- without this, `replied` from a PREVIOUS run of
+    this same request_id would carry over and wrongly look like the brand new
+    run already sent something, before it's even started."""
+    with db.connect() as conn, conn.cursor() as cur:
+        cur.execute("UPDATE audit.run_results SET replied = false, updated_at = now() WHERE request_id = %s",
+                    (request_id,))
+        conn.commit()
+
+
 def load(request_id: str) -> dict | None:
     with db.connect() as conn, conn.cursor() as cur:
         cur.execute("SELECT * FROM audit.run_results WHERE request_id = %s", (request_id,))
