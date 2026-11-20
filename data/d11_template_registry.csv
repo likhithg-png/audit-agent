@@ -59,3 +59,343 @@ TPL-WA-037,WHATSAPP,en,wa_urgent_legal_warning,FINAL WARNING {{1}}: legal action
 TPL-WA-038,WHATSAPP,en,wa_settlement_offer,"Dear {{1}}, special one-time settlement offer of Rs {{2}} valid till {{3}}.",PENDING,,Compliance-Comms
 TPL-WA-039,WHATSAPP,en,wa_field_visit_notice,"Dear {{1}}, our representative will visit you on {{2}} regarding a/c ending {{3}}.",APPROVED,2026-03-16,Compliance-Comms
 TPL-WA-040,WHATSAPP,en,wa_restructure_offer,"Dear {{1}}, you may be eligible to restructure your loan a/c ending {{2}}. Reply YES.",APPROVED,2026-05-11,Compliance-Comms
+TPL-WA-041,WHATSAPP,en,wa_reminder_v2_000,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-12-07,Compliance-Comms
+TPL-WA-042,WHATSAPP,hi,wa_reminder_v2_001,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-09-28,Compliance-Comms
+TPL-WA-043,WHATSAPP,kn,wa_reminder_v2_002,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-01-17,Compliance-Comms
+TPL-WA-044,WHATSAPP,ta,wa_reminder_v2_003,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-01-17,Compliance-Comms
+TPL-WA-045,WHATSAPP,te,wa_reminder_v2_004,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-10,Compliance-Comms
+TPL-WA-046,WHATSAPP,en,wa_reminder_v2_005,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-11-09,Compliance-Comms
+TPL-WA-047,WHATSAPP,hi,wa_reminder_v2_006,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-04-07,Compliance-Comms
+TPL-WA-048,WHATSAPP,kn,wa_reminder_v2_007,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-06-23,Compliance-Comms
+TPL-WA-049,WHATSAPP,ta,wa_reminder_v2_008,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-05-09,Compliance-Comms
+TPL-WA-050,WHATSAPP,te,wa_reminder_v2_009,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-06-02,Compliance-Comms
+TPL-WA-051,WHATSAPP,en,wa_reminder_v2_010,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-03-17,Compliance-Comms
+TPL-WA-052,WHATSAPP,hi,wa_reminder_v2_011,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-09-23,Compliance-Comms
+TPL-WA-053,WHATSAPP,kn,wa_reminder_v2_012,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2026-01-24,Compliance-Comms
+TPL-WA-054,WHATSAPP,ta,wa_reminder_v2_013,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-04-19,Compliance-Comms
+TPL-WA-055,WHATSAPP,te,wa_reminder_v2_014,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-03-03,Compliance-Comms
+TPL-WA-056,WHATSAPP,en,wa_reminder_v2_015,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-03-24,Compliance-Comms
+TPL-WA-057,WHATSAPP,hi,wa_reminder_v2_016,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-07-01,Compliance-Comms
+TPL-WA-058,WHATSAPP,kn,wa_reminder_v2_017,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-10-01,Compliance-Comms
+TPL-WA-059,WHATSAPP,ta,wa_reminder_v2_018,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",REJECTED,,Compliance-Comms
+TPL-WA-060,WHATSAPP,te,wa_reminder_v2_019,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-02-20,Compliance-Comms
+TPL-WA-061,WHATSAPP,en,wa_reminder_v2_020,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-07-21,Compliance-Comms
+TPL-WA-062,WHATSAPP,hi,wa_reminder_v2_021,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-04-28,Compliance-Comms
+TPL-WA-063,WHATSAPP,kn,wa_reminder_v2_022,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-07-09,Compliance-Comms
+TPL-WA-064,WHATSAPP,ta,wa_reminder_v2_023,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2026-05-13,Compliance-Comms
+TPL-WA-065,WHATSAPP,te,wa_reminder_v2_024,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-04-01,Compliance-Comms
+TPL-WA-066,WHATSAPP,en,wa_reminder_v2_025,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-06-14,Compliance-Comms
+TPL-WA-067,WHATSAPP,hi,wa_reminder_v2_026,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2026-03-08,Compliance-Comms
+TPL-WA-068,WHATSAPP,kn,wa_reminder_v2_027,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-12-06,Compliance-Comms
+TPL-WA-069,WHATSAPP,ta,wa_reminder_v2_028,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-10-09,Compliance-Comms
+TPL-WA-070,WHATSAPP,te,wa_reminder_v2_029,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-05-02,Compliance-Comms
+TPL-WA-071,WHATSAPP,en,wa_reminder_v2_030,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",PENDING,,Compliance-Comms
+TPL-WA-072,WHATSAPP,hi,wa_reminder_v2_031,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-07-15,Compliance-Comms
+TPL-WA-073,WHATSAPP,kn,wa_reminder_v2_032,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-10,Compliance-Comms
+TPL-WA-074,WHATSAPP,ta,wa_reminder_v2_033,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-06-15,Compliance-Comms
+TPL-WA-075,WHATSAPP,te,wa_reminder_v2_034,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-02-09,Compliance-Comms
+TPL-WA-076,WHATSAPP,en,wa_reminder_v2_035,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-12-09,Compliance-Comms
+TPL-WA-077,WHATSAPP,hi,wa_reminder_v2_036,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-06-01,Compliance-Comms
+TPL-WA-078,WHATSAPP,kn,wa_reminder_v2_037,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-07-20,Compliance-Comms
+TPL-WA-079,WHATSAPP,ta,wa_reminder_v2_038,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-05-15,Compliance-Comms
+TPL-WA-080,WHATSAPP,te,wa_reminder_v2_039,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-01-16,Compliance-Comms
+TPL-WA-081,WHATSAPP,en,wa_reminder_v2_040,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-07-31,Compliance-Comms
+TPL-WA-082,WHATSAPP,hi,wa_reminder_v2_041,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",PENDING,,Compliance-Comms
+TPL-WA-083,WHATSAPP,kn,wa_reminder_v2_042,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-04-24,Compliance-Comms
+TPL-WA-084,WHATSAPP,ta,wa_reminder_v2_043,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-10-04,Compliance-Comms
+TPL-WA-085,WHATSAPP,te,wa_reminder_v2_044,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2026-03-20,Compliance-Comms
+TPL-WA-086,WHATSAPP,en,wa_reminder_v2_045,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-06-06,Compliance-Comms
+TPL-WA-087,WHATSAPP,hi,wa_reminder_v2_046,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-03-28,Compliance-Comms
+TPL-WA-088,WHATSAPP,kn,wa_reminder_v2_047,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",REJECTED,,Compliance-Comms
+TPL-WA-089,WHATSAPP,ta,wa_reminder_v2_048,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-08-16,Compliance-Comms
+TPL-WA-090,WHATSAPP,te,wa_reminder_v2_049,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-03-08,Compliance-Comms
+TPL-WA-091,WHATSAPP,en,wa_reminder_v2_050,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-11-19,Compliance-Comms
+TPL-WA-092,WHATSAPP,hi,wa_reminder_v2_051,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-12-15,Compliance-Comms
+TPL-WA-093,WHATSAPP,kn,wa_reminder_v2_052,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-08-02,Compliance-Comms
+TPL-WA-094,WHATSAPP,ta,wa_reminder_v2_053,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-02-24,Compliance-Comms
+TPL-WA-095,WHATSAPP,te,wa_reminder_v2_054,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",PENDING,,Compliance-Comms
+TPL-WA-096,WHATSAPP,en,wa_reminder_v2_055,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",PENDING,,Compliance-Comms
+TPL-WA-097,WHATSAPP,hi,wa_reminder_v2_056,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-02-05,Compliance-Comms
+TPL-WA-098,WHATSAPP,kn,wa_reminder_v2_057,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-10-13,Compliance-Comms
+TPL-WA-099,WHATSAPP,ta,wa_reminder_v2_058,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-10-16,Compliance-Comms
+TPL-WA-100,WHATSAPP,te,wa_reminder_v2_059,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-07-18,Compliance-Comms
+TPL-WA-101,WHATSAPP,en,wa_reminder_v2_060,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-09-04,Compliance-Comms
+TPL-WA-102,WHATSAPP,hi,wa_reminder_v2_061,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-02-14,Compliance-Comms
+TPL-WA-103,WHATSAPP,kn,wa_reminder_v2_062,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-10-14,Compliance-Comms
+TPL-WA-104,WHATSAPP,ta,wa_reminder_v2_063,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-08-16,Compliance-Comms
+TPL-WA-105,WHATSAPP,te,wa_reminder_v2_064,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",REJECTED,,Compliance-Comms
+TPL-WA-106,WHATSAPP,en,wa_reminder_v2_065,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-05-20,Compliance-Comms
+TPL-WA-107,WHATSAPP,hi,wa_reminder_v2_066,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",REJECTED,,Compliance-Comms
+TPL-WA-108,WHATSAPP,kn,wa_reminder_v2_067,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2026-01-11,Compliance-Comms
+TPL-WA-109,WHATSAPP,ta,wa_reminder_v2_068,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-03-13,Compliance-Comms
+TPL-WA-110,WHATSAPP,te,wa_reminder_v2_069,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-10-29,Compliance-Comms
+TPL-WA-111,WHATSAPP,en,wa_reminder_v2_070,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-02-04,Compliance-Comms
+TPL-WA-112,WHATSAPP,hi,wa_reminder_v2_071,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-01-26,Compliance-Comms
+TPL-WA-113,WHATSAPP,kn,wa_reminder_v2_072,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-08-14,Compliance-Comms
+TPL-WA-114,WHATSAPP,ta,wa_reminder_v2_073,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-07-28,Compliance-Comms
+TPL-WA-115,WHATSAPP,te,wa_reminder_v2_074,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-09-07,Compliance-Comms
+TPL-WA-116,WHATSAPP,en,wa_reminder_v2_075,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-01-24,Compliance-Comms
+TPL-WA-117,WHATSAPP,hi,wa_reminder_v2_076,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",REJECTED,,Compliance-Comms
+TPL-WA-118,WHATSAPP,kn,wa_reminder_v2_077,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-09-24,Compliance-Comms
+TPL-WA-119,WHATSAPP,ta,wa_reminder_v2_078,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-04-30,Compliance-Comms
+TPL-WA-120,WHATSAPP,te,wa_reminder_v2_079,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",REJECTED,,Compliance-Comms
+TPL-WA-121,WHATSAPP,en,wa_reminder_v2_080,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-06-05,Compliance-Comms
+TPL-WA-122,WHATSAPP,hi,wa_reminder_v2_081,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-07-21,Compliance-Comms
+TPL-WA-123,WHATSAPP,kn,wa_reminder_v2_082,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",REJECTED,,Compliance-Comms
+TPL-WA-124,WHATSAPP,ta,wa_reminder_v2_083,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-07-18,Compliance-Comms
+TPL-WA-125,WHATSAPP,te,wa_reminder_v2_084,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-03-10,Compliance-Comms
+TPL-WA-126,WHATSAPP,en,wa_reminder_v2_085,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-05-05,Compliance-Comms
+TPL-WA-127,WHATSAPP,hi,wa_reminder_v2_086,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-01-11,Compliance-Comms
+TPL-WA-128,WHATSAPP,kn,wa_reminder_v2_087,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-05-10,Compliance-Comms
+TPL-WA-129,WHATSAPP,ta,wa_reminder_v2_088,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-06,Compliance-Comms
+TPL-WA-130,WHATSAPP,te,wa_reminder_v2_089,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-06-15,Compliance-Comms
+TPL-WA-131,WHATSAPP,en,wa_reminder_v2_090,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-01-03,Compliance-Comms
+TPL-WA-132,WHATSAPP,hi,wa_reminder_v2_091,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-11-18,Compliance-Comms
+TPL-WA-133,WHATSAPP,kn,wa_reminder_v2_092,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-06-17,Compliance-Comms
+TPL-WA-134,WHATSAPP,ta,wa_reminder_v2_093,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-09-06,Compliance-Comms
+TPL-WA-135,WHATSAPP,te,wa_reminder_v2_094,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-10-27,Compliance-Comms
+TPL-WA-136,WHATSAPP,en,wa_reminder_v2_095,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-04-12,Compliance-Comms
+TPL-WA-137,WHATSAPP,hi,wa_reminder_v2_096,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-03-15,Compliance-Comms
+TPL-WA-138,WHATSAPP,kn,wa_reminder_v2_097,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",REJECTED,,Compliance-Comms
+TPL-WA-139,WHATSAPP,ta,wa_reminder_v2_098,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-04-27,Compliance-Comms
+TPL-WA-140,WHATSAPP,te,wa_reminder_v2_099,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-08-08,Compliance-Comms
+TPL-WA-141,WHATSAPP,en,wa_reminder_v2_100,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2026-01-29,Compliance-Comms
+TPL-WA-142,WHATSAPP,hi,wa_reminder_v2_101,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",REJECTED,,Compliance-Comms
+TPL-WA-143,WHATSAPP,kn,wa_reminder_v2_102,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",PENDING,,Compliance-Comms
+TPL-WA-144,WHATSAPP,ta,wa_reminder_v2_103,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-03-23,Compliance-Comms
+TPL-WA-145,WHATSAPP,te,wa_reminder_v2_104,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-12-28,Compliance-Comms
+TPL-WA-146,WHATSAPP,en,wa_reminder_v2_105,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-06-17,Compliance-Comms
+TPL-WA-147,WHATSAPP,hi,wa_reminder_v2_106,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-11-25,Compliance-Comms
+TPL-WA-148,WHATSAPP,kn,wa_reminder_v2_107,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-11-09,Compliance-Comms
+TPL-WA-149,WHATSAPP,ta,wa_reminder_v2_108,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-05-16,Compliance-Comms
+TPL-WA-150,WHATSAPP,te,wa_reminder_v2_109,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",REJECTED,,Compliance-Comms
+TPL-WA-151,WHATSAPP,en,wa_reminder_v2_110,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-06-19,Compliance-Comms
+TPL-WA-152,WHATSAPP,hi,wa_reminder_v2_111,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-03-09,Compliance-Comms
+TPL-WA-153,WHATSAPP,kn,wa_reminder_v2_112,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",PENDING,,Compliance-Comms
+TPL-WA-154,WHATSAPP,ta,wa_reminder_v2_113,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-07-20,Compliance-Comms
+TPL-WA-155,WHATSAPP,te,wa_reminder_v2_114,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-11-15,Compliance-Comms
+TPL-WA-156,WHATSAPP,en,wa_reminder_v2_115,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-11-24,Compliance-Comms
+TPL-WA-157,WHATSAPP,hi,wa_reminder_v2_116,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-03-19,Compliance-Comms
+TPL-WA-158,WHATSAPP,kn,wa_reminder_v2_117,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-10-13,Compliance-Comms
+TPL-WA-159,WHATSAPP,ta,wa_reminder_v2_118,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-04-01,Compliance-Comms
+TPL-WA-160,WHATSAPP,te,wa_reminder_v2_119,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-08-30,Compliance-Comms
+TPL-WA-161,WHATSAPP,en,wa_reminder_v2_120,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-06-22,Compliance-Comms
+TPL-WA-162,WHATSAPP,hi,wa_reminder_v2_121,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-09-23,Compliance-Comms
+TPL-WA-163,WHATSAPP,kn,wa_reminder_v2_122,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-03-13,Compliance-Comms
+TPL-WA-164,WHATSAPP,ta,wa_reminder_v2_123,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-02-13,Compliance-Comms
+TPL-WA-165,WHATSAPP,te,wa_reminder_v2_124,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-10-05,Compliance-Comms
+TPL-WA-166,WHATSAPP,en,wa_reminder_v2_125,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-11-26,Compliance-Comms
+TPL-WA-167,WHATSAPP,hi,wa_reminder_v2_126,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-06-08,Compliance-Comms
+TPL-WA-168,WHATSAPP,kn,wa_reminder_v2_127,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-08-14,Compliance-Comms
+TPL-WA-169,WHATSAPP,ta,wa_reminder_v2_128,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-03-07,Compliance-Comms
+TPL-WA-170,WHATSAPP,te,wa_reminder_v2_129,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-05-20,Compliance-Comms
+TPL-WA-171,WHATSAPP,en,wa_reminder_v2_130,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-05,Compliance-Comms
+TPL-WA-172,WHATSAPP,hi,wa_reminder_v2_131,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-12-03,Compliance-Comms
+TPL-WA-173,WHATSAPP,kn,wa_reminder_v2_132,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-11-24,Compliance-Comms
+TPL-WA-174,WHATSAPP,ta,wa_reminder_v2_133,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-01-02,Compliance-Comms
+TPL-WA-175,WHATSAPP,te,wa_reminder_v2_134,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-04-29,Compliance-Comms
+TPL-WA-176,WHATSAPP,en,wa_reminder_v2_135,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2026-03-14,Compliance-Comms
+TPL-WA-177,WHATSAPP,hi,wa_reminder_v2_136,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-05-14,Compliance-Comms
+TPL-WA-178,WHATSAPP,kn,wa_reminder_v2_137,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-06,Compliance-Comms
+TPL-WA-179,WHATSAPP,ta,wa_reminder_v2_138,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-07-19,Compliance-Comms
+TPL-WA-180,WHATSAPP,te,wa_reminder_v2_139,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-03-31,Compliance-Comms
+TPL-WA-181,WHATSAPP,en,wa_reminder_v2_140,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-12-31,Compliance-Comms
+TPL-WA-182,WHATSAPP,hi,wa_reminder_v2_141,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-04-15,Compliance-Comms
+TPL-WA-183,WHATSAPP,kn,wa_reminder_v2_142,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-05-23,Compliance-Comms
+TPL-WA-184,WHATSAPP,ta,wa_reminder_v2_143,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-04-18,Compliance-Comms
+TPL-WA-185,WHATSAPP,te,wa_reminder_v2_144,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2026-05-11,Compliance-Comms
+TPL-WA-186,WHATSAPP,en,wa_reminder_v2_145,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-06-28,Compliance-Comms
+TPL-WA-187,WHATSAPP,hi,wa_reminder_v2_146,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-08-26,Compliance-Comms
+TPL-WA-188,WHATSAPP,kn,wa_reminder_v2_147,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-01-23,Compliance-Comms
+TPL-WA-189,WHATSAPP,ta,wa_reminder_v2_148,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-06-02,Compliance-Comms
+TPL-WA-190,WHATSAPP,te,wa_reminder_v2_149,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-07-24,Compliance-Comms
+TPL-WA-191,WHATSAPP,en,wa_reminder_v2_150,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-12-18,Compliance-Comms
+TPL-WA-192,WHATSAPP,hi,wa_reminder_v2_151,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-12-24,Compliance-Comms
+TPL-WA-193,WHATSAPP,kn,wa_reminder_v2_152,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2026-04-02,Compliance-Comms
+TPL-WA-194,WHATSAPP,ta,wa_reminder_v2_153,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-12-05,Compliance-Comms
+TPL-WA-195,WHATSAPP,te,wa_reminder_v2_154,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-01-21,Compliance-Comms
+TPL-WA-196,WHATSAPP,en,wa_reminder_v2_155,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-05-22,Compliance-Comms
+TPL-WA-197,WHATSAPP,hi,wa_reminder_v2_156,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-07-01,Compliance-Comms
+TPL-WA-198,WHATSAPP,kn,wa_reminder_v2_157,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-07-06,Compliance-Comms
+TPL-WA-199,WHATSAPP,ta,wa_reminder_v2_158,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-12-24,Compliance-Comms
+TPL-WA-200,WHATSAPP,te,wa_reminder_v2_159,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-09-24,Compliance-Comms
+TPL-WA-201,WHATSAPP,en,wa_reminder_v2_160,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-02-09,Compliance-Comms
+TPL-WA-202,WHATSAPP,hi,wa_reminder_v2_161,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-03-09,Compliance-Comms
+TPL-WA-203,WHATSAPP,kn,wa_reminder_v2_162,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-12-17,Compliance-Comms
+TPL-WA-204,WHATSAPP,ta,wa_reminder_v2_163,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2026-05-11,Compliance-Comms
+TPL-WA-205,WHATSAPP,te,wa_reminder_v2_164,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-10-08,Compliance-Comms
+TPL-WA-206,WHATSAPP,en,wa_reminder_v2_165,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",REJECTED,,Compliance-Comms
+TPL-WA-207,WHATSAPP,hi,wa_reminder_v2_166,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2026-04-21,Compliance-Comms
+TPL-WA-208,WHATSAPP,kn,wa_reminder_v2_167,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",PENDING,,Compliance-Comms
+TPL-WA-209,WHATSAPP,ta,wa_reminder_v2_168,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-08-18,Compliance-Comms
+TPL-WA-210,WHATSAPP,te,wa_reminder_v2_169,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-09-24,Compliance-Comms
+TPL-WA-211,WHATSAPP,en,wa_reminder_v2_170,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-10-15,Compliance-Comms
+TPL-WA-212,WHATSAPP,hi,wa_reminder_v2_171,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-02-17,Compliance-Comms
+TPL-WA-213,WHATSAPP,kn,wa_reminder_v2_172,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-03-13,Compliance-Comms
+TPL-WA-214,WHATSAPP,ta,wa_reminder_v2_173,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-12-01,Compliance-Comms
+TPL-WA-215,WHATSAPP,te,wa_reminder_v2_174,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-02-24,Compliance-Comms
+TPL-WA-216,WHATSAPP,en,wa_reminder_v2_175,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-05-14,Compliance-Comms
+TPL-WA-217,WHATSAPP,hi,wa_reminder_v2_176,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-05-07,Compliance-Comms
+TPL-WA-218,WHATSAPP,kn,wa_reminder_v2_177,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-06-15,Compliance-Comms
+TPL-WA-219,WHATSAPP,ta,wa_reminder_v2_178,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-09-03,Compliance-Comms
+TPL-WA-220,WHATSAPP,te,wa_reminder_v2_179,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-15,Compliance-Comms
+TPL-WA-221,WHATSAPP,en,wa_reminder_v2_180,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-12-19,Compliance-Comms
+TPL-WA-222,WHATSAPP,hi,wa_reminder_v2_181,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-01-04,Compliance-Comms
+TPL-WA-223,WHATSAPP,kn,wa_reminder_v2_182,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-05-10,Compliance-Comms
+TPL-WA-224,WHATSAPP,ta,wa_reminder_v2_183,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-05-04,Compliance-Comms
+TPL-WA-225,WHATSAPP,te,wa_reminder_v2_184,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-07-06,Compliance-Comms
+TPL-WA-226,WHATSAPP,en,wa_reminder_v2_185,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-03-12,Compliance-Comms
+TPL-WA-227,WHATSAPP,hi,wa_reminder_v2_186,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-02-22,Compliance-Comms
+TPL-WA-228,WHATSAPP,kn,wa_reminder_v2_187,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-11-10,Compliance-Comms
+TPL-WA-229,WHATSAPP,ta,wa_reminder_v2_188,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-10-08,Compliance-Comms
+TPL-WA-230,WHATSAPP,te,wa_reminder_v2_189,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-02-03,Compliance-Comms
+TPL-WA-231,WHATSAPP,en,wa_reminder_v2_190,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-03-12,Compliance-Comms
+TPL-WA-232,WHATSAPP,hi,wa_reminder_v2_191,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-03-23,Compliance-Comms
+TPL-WA-233,WHATSAPP,kn,wa_reminder_v2_192,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-11-26,Compliance-Comms
+TPL-WA-234,WHATSAPP,ta,wa_reminder_v2_193,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",REJECTED,,Compliance-Comms
+TPL-WA-235,WHATSAPP,te,wa_reminder_v2_194,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2026-02-20,Compliance-Comms
+TPL-WA-236,WHATSAPP,en,wa_reminder_v2_195,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2024-12-10,Compliance-Comms
+TPL-WA-237,WHATSAPP,hi,wa_reminder_v2_196,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-01-31,Compliance-Comms
+TPL-WA-238,WHATSAPP,kn,wa_reminder_v2_197,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-04-22,Compliance-Comms
+TPL-WA-239,WHATSAPP,ta,wa_reminder_v2_198,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-11-09,Compliance-Comms
+TPL-WA-240,WHATSAPP,te,wa_reminder_v2_199,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-06-23,Compliance-Comms
+TPL-WA-241,WHATSAPP,en,wa_reminder_v2_200,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-07-30,Compliance-Comms
+TPL-WA-242,WHATSAPP,hi,wa_reminder_v2_201,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",PENDING,,Compliance-Comms
+TPL-WA-243,WHATSAPP,kn,wa_reminder_v2_202,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-02-15,Compliance-Comms
+TPL-WA-244,WHATSAPP,ta,wa_reminder_v2_203,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-01-25,Compliance-Comms
+TPL-WA-245,WHATSAPP,te,wa_reminder_v2_204,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-12-24,Compliance-Comms
+TPL-WA-246,WHATSAPP,en,wa_reminder_v2_205,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-04-05,Compliance-Comms
+TPL-WA-247,WHATSAPP,hi,wa_reminder_v2_206,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-10-26,Compliance-Comms
+TPL-WA-248,WHATSAPP,kn,wa_reminder_v2_207,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",PENDING,,Compliance-Comms
+TPL-WA-249,WHATSAPP,ta,wa_reminder_v2_208,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2026-03-12,Compliance-Comms
+TPL-WA-250,WHATSAPP,te,wa_reminder_v2_209,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",REJECTED,,Compliance-Comms
+TPL-WA-251,WHATSAPP,en,wa_reminder_v2_210,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-07-15,Compliance-Comms
+TPL-WA-252,WHATSAPP,hi,wa_reminder_v2_211,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2024-07-13,Compliance-Comms
+TPL-WA-253,WHATSAPP,kn,wa_reminder_v2_212,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-08-19,Compliance-Comms
+TPL-WA-254,WHATSAPP,ta,wa_reminder_v2_213,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",PENDING,,Compliance-Comms
+TPL-WA-255,WHATSAPP,te,wa_reminder_v2_214,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-12-15,Compliance-Comms
+TPL-WA-256,WHATSAPP,en,wa_reminder_v2_215,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-06-24,Compliance-Comms
+TPL-WA-257,WHATSAPP,hi,wa_reminder_v2_216,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-12-16,Compliance-Comms
+TPL-WA-258,WHATSAPP,kn,wa_reminder_v2_217,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-03-12,Compliance-Comms
+TPL-WA-259,WHATSAPP,ta,wa_reminder_v2_218,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-10-24,Compliance-Comms
+TPL-WA-260,WHATSAPP,te,wa_reminder_v2_219,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-11-11,Compliance-Comms
+TPL-WA-261,WHATSAPP,en,wa_reminder_v2_220,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2024-11-10,Compliance-Comms
+TPL-WA-262,WHATSAPP,hi,wa_reminder_v2_221,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2026-03-24,Compliance-Comms
+TPL-WA-263,WHATSAPP,kn,wa_reminder_v2_222,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",REJECTED,,Compliance-Comms
+TPL-WA-264,WHATSAPP,ta,wa_reminder_v2_223,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-02-26,Compliance-Comms
+TPL-WA-265,WHATSAPP,te,wa_reminder_v2_224,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-06-01,Compliance-Comms
+TPL-WA-266,WHATSAPP,en,wa_reminder_v2_225,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-03-19,Compliance-Comms
+TPL-WA-267,WHATSAPP,hi,wa_reminder_v2_226,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2024-06-12,Compliance-Comms
+TPL-WA-268,WHATSAPP,kn,wa_reminder_v2_227,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2026-03-21,Compliance-Comms
+TPL-WA-269,WHATSAPP,ta,wa_reminder_v2_228,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2026-03-05,Compliance-Comms
+TPL-WA-270,WHATSAPP,te,wa_reminder_v2_229,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",PENDING,,Compliance-Comms
+TPL-WA-271,WHATSAPP,en,wa_reminder_v2_230,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",PENDING,,Compliance-Comms
+TPL-WA-272,WHATSAPP,hi,wa_reminder_v2_231,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2024-07-04,Compliance-Comms
+TPL-WA-273,WHATSAPP,kn,wa_reminder_v2_232,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2025-05-26,Compliance-Comms
+TPL-WA-274,WHATSAPP,ta,wa_reminder_v2_233,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-08-09,Compliance-Comms
+TPL-WA-275,WHATSAPP,te,wa_reminder_v2_234,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-11-22,Compliance-Comms
+TPL-WA-276,WHATSAPP,en,wa_reminder_v2_235,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2025-04-03,Compliance-Comms
+TPL-WA-277,WHATSAPP,hi,wa_reminder_v2_236,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2024-12-21,Compliance-Comms
+TPL-WA-278,WHATSAPP,kn,wa_reminder_v2_237,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2026-03-12,Compliance-Comms
+TPL-WA-279,WHATSAPP,ta,wa_reminder_v2_238,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2025-09-02,Compliance-Comms
+TPL-WA-280,WHATSAPP,te,wa_reminder_v2_239,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-04-28,Compliance-Comms
+TPL-WA-281,WHATSAPP,en,wa_reminder_v2_240,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-04-21,Compliance-Comms
+TPL-WA-282,WHATSAPP,hi,wa_reminder_v2_241,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-06-14,Compliance-Comms
+TPL-WA-283,WHATSAPP,kn,wa_reminder_v2_242,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",APPROVED,2024-06-22,Compliance-Comms
+TPL-WA-284,WHATSAPP,ta,wa_reminder_v2_243,"Dear {{1}}, your payment of Rs {{2}} was received, thank you. Outstanding balance: Rs {{3}}.",APPROVED,2025-11-12,Compliance-Comms
+TPL-WA-285,WHATSAPP,te,wa_reminder_v2_244,"Dear {{1}}, your loan a/c ending {{2}} is now {{3}} days overdue. Please contact us at {{4}}.",APPROVED,2025-11-17,Compliance-Comms
+TPL-WA-286,WHATSAPP,en,wa_reminder_v2_245,"Dear {{1}}, your EMI of Rs {{2}} for loan a/c ending {{3}} is due on {{4}}. Pay here: {{5}}",APPROVED,2026-01-12,Compliance-Comms
+TPL-WA-287,WHATSAPP,hi,wa_reminder_v2_246,"Hi {{1}}, a friendly reminder that Rs {{2}} is overdue on your loan a/c ending {{3}}. Pay now: {{4}}",APPROVED,2026-01-31,Compliance-Comms
+TPL-WA-288,WHATSAPP,kn,wa_reminder_v2_247,"Dear {{1}}, we could not reach you. Please call us on {{2}} regarding your loan a/c ending {{3}}.",APPROVED,2025-03-19,Compliance-Comms
+TPL-WA-289,WHATSAPP,ta,wa_reminder_v2_248,"{{1}} ji, aapke loan a/c {{2}} par Rs {{3}} baaki hai. Kripya {{4}} tak bhugtan karein: {{5}}",APPROVED,2025-11-08,Compliance-Comms
+TPL-WA-290,WHATSAPP,te,wa_reminder_v2_249,"Dear {{1}}, thank you for your promise to pay Rs {{2}} on {{3}}. Pay securely: {{4}}",PENDING,,Compliance-Comms
+TPL-SMS-021,SMS,en,sms_reminder_v2_000,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-09-10,Compliance-Comms
+TPL-SMS-022,SMS,hi,sms_reminder_v2_001,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-05-16,Compliance-Comms
+TPL-SMS-023,SMS,kn,sms_reminder_v2_002,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-11-27,Compliance-Comms
+TPL-SMS-024,SMS,ta,sms_reminder_v2_003,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-02-26,Compliance-Comms
+TPL-SMS-025,SMS,te,sms_reminder_v2_004,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-09-08,Compliance-Comms
+TPL-SMS-026,SMS,en,sms_reminder_v2_005,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-04-12,Compliance-Comms
+TPL-SMS-027,SMS,hi,sms_reminder_v2_006,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-09-29,Compliance-Comms
+TPL-SMS-028,SMS,kn,sms_reminder_v2_007,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-04-21,Compliance-Comms
+TPL-SMS-029,SMS,ta,sms_reminder_v2_008,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-04-14,Compliance-Comms
+TPL-SMS-030,SMS,te,sms_reminder_v2_009,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-02,Compliance-Comms
+TPL-SMS-031,SMS,en,sms_reminder_v2_010,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-11-09,Compliance-Comms
+TPL-SMS-032,SMS,hi,sms_reminder_v2_011,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-23,Compliance-Comms
+TPL-SMS-033,SMS,kn,sms_reminder_v2_012,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-29,Compliance-Comms
+TPL-SMS-034,SMS,ta,sms_reminder_v2_013,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-02-16,Compliance-Comms
+TPL-SMS-035,SMS,te,sms_reminder_v2_014,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-08-20,Compliance-Comms
+TPL-SMS-036,SMS,en,sms_reminder_v2_015,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-19,Compliance-Comms
+TPL-SMS-037,SMS,hi,sms_reminder_v2_016,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-05-13,Compliance-Comms
+TPL-SMS-038,SMS,kn,sms_reminder_v2_017,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-09-02,Compliance-Comms
+TPL-SMS-039,SMS,ta,sms_reminder_v2_018,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-17,Compliance-Comms
+TPL-SMS-040,SMS,te,sms_reminder_v2_019,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-12-04,Compliance-Comms
+TPL-SMS-041,SMS,en,sms_reminder_v2_020,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-08,Compliance-Comms
+TPL-SMS-042,SMS,hi,sms_reminder_v2_021,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-11,Compliance-Comms
+TPL-SMS-043,SMS,kn,sms_reminder_v2_022,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-02-16,Compliance-Comms
+TPL-SMS-044,SMS,ta,sms_reminder_v2_023,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-03-07,Compliance-Comms
+TPL-SMS-045,SMS,te,sms_reminder_v2_024,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-06-11,Compliance-Comms
+TPL-SMS-046,SMS,en,sms_reminder_v2_025,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-06-23,Compliance-Comms
+TPL-SMS-047,SMS,hi,sms_reminder_v2_026,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-05-18,Compliance-Comms
+TPL-SMS-048,SMS,kn,sms_reminder_v2_027,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-29,Compliance-Comms
+TPL-SMS-049,SMS,ta,sms_reminder_v2_028,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-12-20,Compliance-Comms
+TPL-SMS-050,SMS,te,sms_reminder_v2_029,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-11-05,Compliance-Comms
+TPL-SMS-051,SMS,en,sms_reminder_v2_030,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-03-01,Compliance-Comms
+TPL-SMS-052,SMS,hi,sms_reminder_v2_031,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-02,Compliance-Comms
+TPL-SMS-053,SMS,kn,sms_reminder_v2_032,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-12-19,Compliance-Comms
+TPL-SMS-054,SMS,ta,sms_reminder_v2_033,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-01-30,Compliance-Comms
+TPL-SMS-055,SMS,te,sms_reminder_v2_034,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-08-15,Compliance-Comms
+TPL-SMS-056,SMS,en,sms_reminder_v2_035,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-06-18,Compliance-Comms
+TPL-SMS-057,SMS,hi,sms_reminder_v2_036,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-07,Compliance-Comms
+TPL-SMS-058,SMS,kn,sms_reminder_v2_037,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-11-23,Compliance-Comms
+TPL-SMS-059,SMS,ta,sms_reminder_v2_038,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-03,Compliance-Comms
+TPL-SMS-060,SMS,te,sms_reminder_v2_039,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-09-10,Compliance-Comms
+TPL-SMS-061,SMS,en,sms_reminder_v2_040,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-06-16,Compliance-Comms
+TPL-SMS-062,SMS,hi,sms_reminder_v2_041,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-09-21,Compliance-Comms
+TPL-SMS-063,SMS,kn,sms_reminder_v2_042,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-12-03,Compliance-Comms
+TPL-SMS-064,SMS,ta,sms_reminder_v2_043,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-12-29,Compliance-Comms
+TPL-SMS-065,SMS,te,sms_reminder_v2_044,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-06-06,Compliance-Comms
+TPL-SMS-066,SMS,en,sms_reminder_v2_045,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-06-17,Compliance-Comms
+TPL-SMS-067,SMS,hi,sms_reminder_v2_046,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-12,Compliance-Comms
+TPL-SMS-068,SMS,kn,sms_reminder_v2_047,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-05-23,Compliance-Comms
+TPL-SMS-069,SMS,ta,sms_reminder_v2_048,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-03-24,Compliance-Comms
+TPL-SMS-070,SMS,te,sms_reminder_v2_049,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-08-23,Compliance-Comms
+TPL-SMS-071,SMS,en,sms_reminder_v2_050,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-10-20,Compliance-Comms
+TPL-SMS-072,SMS,hi,sms_reminder_v2_051,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-10,Compliance-Comms
+TPL-SMS-073,SMS,kn,sms_reminder_v2_052,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-20,Compliance-Comms
+TPL-SMS-074,SMS,ta,sms_reminder_v2_053,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-07-17,Compliance-Comms
+TPL-SMS-075,SMS,te,sms_reminder_v2_054,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-02-02,Compliance-Comms
+TPL-SMS-076,SMS,en,sms_reminder_v2_055,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-03-04,Compliance-Comms
+TPL-SMS-077,SMS,hi,sms_reminder_v2_056,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-05-06,Compliance-Comms
+TPL-SMS-078,SMS,kn,sms_reminder_v2_057,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-06-11,Compliance-Comms
+TPL-SMS-079,SMS,ta,sms_reminder_v2_058,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-07-31,Compliance-Comms
+TPL-SMS-080,SMS,te,sms_reminder_v2_059,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-05-28,Compliance-Comms
+TPL-SMS-081,SMS,en,sms_reminder_v2_060,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-04-30,Compliance-Comms
+TPL-SMS-082,SMS,hi,sms_reminder_v2_061,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-08-29,Compliance-Comms
+TPL-SMS-083,SMS,kn,sms_reminder_v2_062,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-12-16,Compliance-Comms
+TPL-SMS-084,SMS,ta,sms_reminder_v2_063,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-03-22,Compliance-Comms
+TPL-SMS-085,SMS,te,sms_reminder_v2_064,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-06-26,Compliance-Comms
+TPL-SMS-086,SMS,en,sms_reminder_v2_065,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-09-20,Compliance-Comms
+TPL-SMS-087,SMS,hi,sms_reminder_v2_066,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-11-03,Compliance-Comms
+TPL-SMS-088,SMS,kn,sms_reminder_v2_067,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-06-10,Compliance-Comms
+TPL-SMS-089,SMS,ta,sms_reminder_v2_068,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-01-25,Compliance-Comms
+TPL-SMS-090,SMS,te,sms_reminder_v2_069,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-11-21,Compliance-Comms
+TPL-SMS-091,SMS,en,sms_reminder_v2_070,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-04-17,Compliance-Comms
+TPL-SMS-092,SMS,hi,sms_reminder_v2_071,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-10-26,Compliance-Comms
+TPL-SMS-093,SMS,kn,sms_reminder_v2_072,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-05-12,Compliance-Comms
+TPL-SMS-094,SMS,ta,sms_reminder_v2_073,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-03-01,Compliance-Comms
+TPL-SMS-095,SMS,te,sms_reminder_v2_074,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-03,Compliance-Comms
+TPL-SMS-096,SMS,en,sms_reminder_v2_075,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-01-01,Compliance-Comms
+TPL-SMS-097,SMS,hi,sms_reminder_v2_076,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-09-05,Compliance-Comms
+TPL-SMS-098,SMS,kn,sms_reminder_v2_077,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-12-22,Compliance-Comms
+TPL-SMS-099,SMS,ta,sms_reminder_v2_078,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-04-19,Compliance-Comms
+TPL-SMS-100,SMS,te,sms_reminder_v2_079,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-05-28,Compliance-Comms
+TPL-SMS-101,SMS,en,sms_reminder_v2_080,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-04-13,Compliance-Comms
+TPL-SMS-102,SMS,hi,sms_reminder_v2_081,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-06-27,Compliance-Comms
+TPL-SMS-103,SMS,kn,sms_reminder_v2_082,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-04-06,Compliance-Comms
+TPL-SMS-104,SMS,ta,sms_reminder_v2_083,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-08-17,Compliance-Comms
+TPL-SMS-105,SMS,te,sms_reminder_v2_084,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-03-27,Compliance-Comms
+TPL-SMS-106,SMS,en,sms_reminder_v2_085,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2026-01-25,Compliance-Comms
+TPL-SMS-107,SMS,hi,sms_reminder_v2_086,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-07-22,Compliance-Comms
+TPL-SMS-108,SMS,kn,sms_reminder_v2_087,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-08-19,Compliance-Comms
+TPL-SMS-109,SMS,ta,sms_reminder_v2_088,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2024-07-10,Compliance-Comms
+TPL-SMS-110,SMS,te,sms_reminder_v2_089,"Dear Customer, Rs {#var#} is due on your loan a/c {#var#}. Pay at {#var#} -LENDER",APPROVED,2025-07-06,Compliance-Comms

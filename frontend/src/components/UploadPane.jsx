@@ -69,7 +69,7 @@ export default function UploadPane({ running, onStarted, onError }) {
       {src === "paste" ? (
         <textarea
           className="paste-box"
-          placeholder="Paste the audit request email's text here..."
+          placeholder="Paste the audit request text here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={running}

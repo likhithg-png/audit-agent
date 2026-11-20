@@ -1,18 +1,31 @@
 # Synthetic data – Audit Evidence Pack Agent (CO-04)
 
-All data is synthetic (fixed seed 42). Regenerate with `python generate_data.py`.
+All data is synthetic. The original 2,000-account dataset is fixed seed 42
+(`python generate_data.py`). It was additively scaled up toward the full
+Agentathon D1/D4/D5/D10/D11/D12 spec volumes with two further generators,
+seed 44 (`python -m scripts.generate_scaleup_core`, then
+`python -m scripts.generate_scaleup_templates_policy`) -- these only ever
+APPEND new rows with a new, non-colliding ID range (accounts `ACC200001+`,
+borrowers `BRW900001+`, contacts `CT90000001+`, consent `CNS9000001+`,
+policy `POL-<lender>-H1xx`); the original 2,000 accounts and everything
+derived from them (REQ-01/02/03 samples, their ground truth, the 100%/1.7%
+eval scores) are untouched byte-for-byte -- re-verified after every scale-up
+step. No new tables were added (deliberately out of scope -- D2/D3/D6/D7/D8/
+D9/D13 from the shared spec aren't read by any check in `agent/checks.py`,
+so there was no functional reason to build them).
+
 Lenders, agencies, people and phone numbers are fictitious; holiday dates are representative, not an official gazette.
 
 ## Files
 
 | File | Source | Rows | Notes |
 |---|---|---|---|
-| `data/d1_account_master_thin.csv` | D1 (thin) | 2,000 | account → borrower, lender, **state** (needed for state holidays) |
-| `data/d4_contact_history.csv` | D4 | ~62k | voice, WhatsApp, SMS attempts, Jan–Jun 2026 |
-| `data/d5_call_transcripts.csv` | D5 | ~48k turns | one row per speaker turn, connected calls only |
-| `data/d10_consent_registry.csv` | D10 | ~4.9k | per-borrower, per-channel consent and opt-outs |
-| `data/d11_template_registry.csv` | D11 | 60 | WhatsApp and SMS templates with approval status |
-| `data/d12_policy_rules.csv` | D12 | 18 | calling hours, caps, notice deadlines, business-day definition, precedence |
+| `data/d1_account_master_thin.csv` | D1 (thin) | 100,000 (2,000 original + 98,000 additive) | account → borrower, lender, **state** (needed for state holidays) |
+| `data/d4_contact_history.csv` | D4 | ~2.99M | voice, WhatsApp, SMS attempts, Jan–Jun 2026 |
+| `data/d5_call_transcripts.csv` | D5 | ~2.30M turns | one row per speaker turn, connected calls only. Coverage kept at ~100% of connected calls for the new accounts too (same ratio as the original 2,000) rather than the spec's literal "audio for 2,000 of 60,000" -- capping it that low would make most new accounts show "transcript missing" for Call Recording / Verification checks by default, which isn't a real compliance signal, just a data gap. |
+| `data/d10_consent_registry.csv` | D10 | ~246k | per-borrower, per-channel consent and opt-outs |
+| `data/d11_template_registry.csv` | D11 | 400 | WhatsApp and SMS templates with approval status |
+| `data/d12_policy_rules.csv` | D12 | 51 | calling hours, caps, notice deadlines, business-day definition, precedence, plus historical/superseded versions per lender. Short of the shared spec's "~200 documents" -- that figure describes whole policy PDFs, while this system models policy as structured parameter rows; 51 is a deliberate stopping point (realistic historical versioning across all 3 lenders × 11 rule types) rather than padding to 200 with low-value filler rows. |
 | `data/notice_dispatch_history.csv` | CO-04 | ~3k | demand / pre-legal notices, Dec 2025–Oct 2026 |
 | `data/holiday_calendar.csv` | CO-04 | 64 | national + state holidays 2026–27 |
 | `data/collector_roster.csv` | CO-04 | 120 | collectors by agency |
