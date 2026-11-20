@@ -158,6 +158,11 @@ def mark_error(message_id: str, error: str) -> None:
     _update(message_id, status="ERROR", error=error)
 
 
+def mark_stopped(message_id: str) -> None:
+    """The user pressed Stop: back to NEW, keeping request_id so it is never auto-started again."""
+    _update(message_id, status="NEW", error=None)
+
+
 def mark_replied(message_id: str) -> None:
     _update(message_id, status="REPLIED")
 

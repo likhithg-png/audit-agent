@@ -43,10 +43,11 @@ TOOLS = [
     {"type": "function", "function": {
         "name": "lookup_policy",
         "description": "The real policy rules (calling-hours window, call-frequency caps, notice deadlines) "
-                       "for one lender -- check this before guessing a severity scale the request didn't state.",
+                       "-- check this before guessing a severity scale the request didn't state. Optional "
+                       "lender_id (e.g. L001) narrows it to one lender; with none, rules for all lenders.",
         "parameters": {"type": "object",
-                       "properties": {"lender_id": {"type": "string", "description": "e.g. L001"}},
-                       "required": ["lender_id"]},
+                       "properties": {"lender_id": {"type": "string", "description": "optional, e.g. L001"}},
+                       "required": []},
     }},
     {"type": "function", "function": {
         "name": "query_accounts",
@@ -89,7 +90,7 @@ def _run_tool(name: str, args: dict, tools: Tools) -> str:
         return json.dumps(list_guidelines())
     if name == "lookup_policy":
         df = tools.policy()
-        rows = df[df.lender_id.isin([args["lender_id"], "ALL"])]
+        rows = df[df.lender_id.isin([args["lender_id"], "ALL"])] if args.get("lender_id") else df
         return rows.to_json(orient="records")
     if name == "query_accounts":
         ids = args.get("account_ids", [])
@@ -121,6 +122,10 @@ def _known_context(lender_id: str, period, sample_file: str) -> str:
     lines = []
     if lender_id:
         lines.append(f"- lender_id is already fixed for this run: {lender_id}. Do not ask which lender it is.")
+    else:
+        lines.append("- There is no single lender for this run: the accounts may belong to several lenders, and "
+                     "each account is checked against its own lender's policy automatically. Do not ask which "
+                     "lender it is.")
     if sample_file:
         lines.append("- The account list to test is already fixed for this run (from an attached file, or "
                      "account ids already named in the request). Do not ask for an account list or an "

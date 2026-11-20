@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react"
+import { api } from "../api"
+
 // The backend only ever emits a flat list of plain-English lines (api/main.py's
 // _append_log calls). This groups them into the pipeline's 4 known macro-stages
 // client-side -- by matching the literal headline text each stage starts with --
@@ -35,24 +38,66 @@ function StageIcon({ state }) {
   return <span className="stage-icon stage-icon-pending" />
 }
 
-export default function RunLog({ log, status, error, clarification }) {
+function fmt(sec) {
+  const t = Math.max(0, Math.floor(sec))
+  const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), r = t % 60
+  const mm = String(m).padStart(h ? 2 : 1, "0"), ss = String(r).padStart(2, "0")
+  return h ? `${h}:${mm}:${ss}` : `${mm}:${ss}`
+}
+
+export default function RunLog({ run, requestId, onStopped }) {
+  const { log, status, error, clarification, started_at, finished_at, clock_offset = 0 } = run
+  const [, tick] = useState(0)
+  const [stopping, setStopping] = useState(false)
+
+  // Re-render every second while running so the timer counts up live.
+  useEffect(() => {
+    if (status !== "running") return
+    const t = setInterval(() => tick((n) => n + 1), 1000)
+    return () => clearInterval(t)
+  }, [status])
+
   if (!log.length) return null
   const { stages, current, doneLine } = groupLog(log)
   const failed = status === "error" && !clarification
+  const stopped = status === "cancelled"
+
+  // Start of the run until it stops (or now, while it is still going).
+  const elapsed = started_at
+    ? (finished_at ?? (Date.now() / 1000 + clock_offset)) - started_at
+    : null
+
+  async function stop() {
+    setStopping(true)
+    try {
+      onStopped(await api.cancelRun(requestId))
+    } catch (e) {
+      setStopping(false)
+    }
+  }
 
   return (
     <section className="pane run-log">
-      <h3>
+      <h3 className="run-head">
         {status === "running" && <span className="spinner" />}
-        {status === "running" ? "Running..."
-          : status === "done" ? "Done"
-          : status === "error" ? (clarification ? "Needs more information" : "Failed")
-          : ""}
+        <span>
+          {status === "running" ? "Running..."
+            : status === "done" ? "Done"
+            : stopped ? "Stopped"
+            : status === "error" ? (clarification ? "Needs more information" : "Failed")
+            : ""}
+        </span>
+        {elapsed !== null && <span className="run-timer" title="Time since the run started">{fmt(elapsed)}</span>}
+        {status === "running" && requestId && (
+          <button className="stop-btn" onClick={stop} disabled={stopping}>
+            {stopping ? "Stopping..." : "Stop"}
+          </button>
+        )}
       </h3>
       <ol className="stage-list">
         {stages.map((s, i) => {
           const state =
-            failed && i === current ? "error"
+            (failed || stopped) && i === current ? "error"
             : i < current || doneLine || status === "done" ? "done"
             : i === current ? "active"
             : "pending"

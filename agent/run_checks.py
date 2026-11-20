@@ -75,7 +75,7 @@ def _persist_run(spec, vdf, gaps_rows):
         return None
 
 
-def run(spec_path, tools=None, out_dir=OUT_DIR, verbose=True):
+def run(spec_path, tools=None, out_dir=OUT_DIR, verbose=True, should_stop=None):
     spec = json.load(open(spec_path))
     rid = spec["request_id"]
     t0 = time.time()
@@ -89,6 +89,8 @@ def run(spec_path, tools=None, out_dir=OUT_DIR, verbose=True):
     order = spec["severity_order"]
     verdicts = []
     for chk in spec["checks"]:
+        if should_stop and should_stop():
+            raise RuntimeError("stopped")  # the caller knows it asked for this
         fn = CHECKS[chk["check_type"]]
         for v in fn(ctx, chk, sample):
             for g in v.gaps:
@@ -106,6 +108,12 @@ def run(spec_path, tools=None, out_dir=OUT_DIR, verbose=True):
             for i, (v, g) in enumerate((v, g) for v in verdicts for g in v.gaps)]
     pd.DataFrame(gaps, columns=["gap_item_id", "request_id", "account_id", "check_id", "check_type", "gap_type",
                                 "severity", "record_ids", "detail"]).to_csv(od / "gap_items.csv", index=False)
+    # The records a check could not test (and why) -- the UI explains "cannot determine" from this.
+    und = [dict(request_id=rid, account_id=v.account_id, check_id=v.check_id, check_type=v.check_type,
+                reason=u.gap_type, record_id=";".join(u.record_ids), detail=u.detail)
+           for v in verdicts for u in v.undetermined]
+    pd.DataFrame(und, columns=["request_id", "account_id", "check_id", "check_type", "reason", "record_id",
+                               "detail"]).to_csv(od / "undetermined_items.csv", index=False)
     summ = (vdf.pivot_table(index=["check_id", "check_type"], columns="status", values="account_id",
                             aggfunc="count", fill_value=0).reset_index())
     summ.to_csv(od / "summary.csv", index=False)

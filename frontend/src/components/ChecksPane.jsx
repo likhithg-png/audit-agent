@@ -9,7 +9,7 @@ function describe(t) {
     case "list_guidelines":
       return "Looked up the guideline catalogue"
     case "lookup_policy":
-      return `Looked up ${a.lender_id || "the lender"}'s policy rules`
+      return "Looked up the policy rules"
     case "query_accounts": {
       const ids = a.account_ids || []
       if (!ids.length) return "Checked the account ids named in the request"

@@ -30,7 +30,14 @@ export const api = {
     return fetch(`${BASE}/inbox/auto-reply`, { method: "POST", body: fd }).then(json)
   },
 
-  getStatus: (id) => fetch(`${BASE}/requests/${id}/status`).then(json),
+  // clock_offset = server clock minus this browser's clock, so the run timer is right
+  // even when the two clocks disagree.
+  getStatus: (id) => fetch(`${BASE}/requests/${id}/status`).then(json).then((s) => ({
+    ...s, clock_offset: s.server_now ? s.server_now - Date.now() / 1000 : 0,
+  })),
+  cancelRun: (id) => fetch(`${BASE}/requests/${id}/cancel`, { method: "POST" }).then(json).then((s) => ({
+    ...s, clock_offset: s.server_now ? s.server_now - Date.now() / 1000 : 0,
+  })),
   getResult: (id) => fetch(`${BASE}/requests/${id}/result`).then(json),
   getGaps: (id, { checkType, severity } = {}) => {
     const params = new URLSearchParams()

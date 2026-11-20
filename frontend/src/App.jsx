@@ -76,7 +76,7 @@ export default function App() {
       // THIS process has nothing for /result to rebuild -- it always 409s -- and for
       // "error" that 409 would otherwise show a stale "run is not done" banner right
       // next to the clarification UI, which already has everything useful to show.
-      if (s.status !== "running" && s.status !== "error") loadResult(requestId)
+      if (s.status !== "running" && s.status !== "error" && s.status !== "cancelled") loadResult(requestId)
     } catch (e) {
       setLoadError(e.message)
     }
@@ -132,7 +132,7 @@ export default function App() {
           </div>
 
           <div className="col-results">
-            <RunLog log={run.log} status={run.status} error={run.error} clarification={run.clarification} />
+            <RunLog run={run} requestId={activeRequestId} onStopped={setRun} />
 
             {run.status === "error" && run.clarification && (
               <ClarificationReplyPane

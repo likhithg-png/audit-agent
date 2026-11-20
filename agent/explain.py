@@ -114,6 +114,21 @@ def _consent_explain(tools, chk, v, gaps, period):
     return headline, summary, items, _consent_rows(consent)
 
 
+CD_TEXT = {
+    "transcript_missing": "no call transcript or recording on file",
+    "label_failed": "the AI could not reliably tell whether the identity check came first",
+    "collector_not_in_roster": "the caller is not in the collector roster",
+}
+
+
+def _cd_reasons(codes) -> str:
+    return "; ".join(CD_TEXT.get(c, c.replace("_", " ")) for c in sorted({c for c in codes if c}))
+
+
+CD_MEANING = ("Cannot determine means the data needed to say pass or fail is missing, so no verdict is given "
+              "(it is not counted as a pass or a fail).")
+
+
 def account_results(request_id: str):
     od = OUT_DIR / request_id
     spec = json.load(open(od / "checks.json"))
@@ -121,17 +136,24 @@ def account_results(request_id: str):
     period = (date.fromisoformat(spec["period"]["from"]), date.fromisoformat(spec["period"]["to"]))
     vdf = pd.read_csv(od / "verdicts.csv", dtype=str).fillna("")
     gdf = pd.read_csv(od / "gap_items.csv", dtype=str).fillna("") if (od / "gap_items.csv").exists() else pd.DataFrame()
+    udf = (pd.read_csv(od / "undetermined_items.csv", dtype=str).fillna("")
+           if (od / "undetermined_items.csv").exists() else pd.DataFrame())
     tools = _tools()
     out = []
     for v in vdf.to_dict("records"):
         chk = checks.get(v["check_id"], {})
         channel = chk.get("params", {}).get("channel") or FIXED_CHANNEL.get(v["check_type"], "")
         gaps = gdf[(gdf.account_id == v["account_id"]) & (gdf.check_id == v["check_id"])].to_dict("records") if len(gdf) else []
+        und = udf[(udf.account_id == v["account_id"]) & (udf.check_id == v["check_id"])].to_dict("records") if len(udf) else []
         row = dict(v, channel=channel, check_name=CHECK_NAME.get(v["check_type"], v["check_type"]), channel_label=CHANNEL_LABEL.get(channel, channel),
                    test=chk.get("test", ""), period=f"{period[0]} to {period[1]}")
         if v["check_type"] == "CONSENT_BEFORE_CONTACT":
             try:
                 row["headline"], row["summary"], row["items"], row["consent"] = _consent_explain(tools, chk, v, gaps, period)
+                if v["status"] == "CANNOT_DETERMINE":
+                    why = _cd_reasons([u["reason"] for u in und] or v.get("cannot_determine_reasons", "").split(";"))
+                    row["headline"] = f"Could not be tested: {why}"
+                    row["summary"] = f"{row['summary'] and row['summary'] + ' '}{CD_MEANING}"
             except Exception as e:  # never break the whole table over one explanation
                 row.update(headline=v["status"], summary=f"(could not build details: {e})", items=[], consent=[])
         else:
@@ -152,10 +174,19 @@ def account_results(request_id: str):
                 row["headline"] = f"No {noun} in the period"
                 row["summary"] = f"There was no {noun} between {span}, so there is nothing to test. Rule: {rule}."
             else:
-                row["headline"] = v["status"].replace("_", " ").title()
-                row["summary"] = "; ".join(g["detail"] for g in gaps)
+                why = _cd_reasons([u["reason"] for u in und] or v.get("cannot_determine_reasons", "").split(";"))
+                k = len({u["record_id"] for u in und})
+                if k:
+                    row["headline"] = f"{k} of {_plural(n, noun)} could not be tested: {why}"
+                    row["summary"] = (f"{_plural(n, noun)} between {span}; {n - k} {'was' if n - k == 1 else 'were'} tested and passed, {k} could not "
+                                      f"be tested because {why}. {CD_MEANING} Rule: {rule}.")
+                else:
+                    row["headline"] = f"Could not be tested: {why or 'data missing'}"
+                    row["summary"] = f"{_plural(n, noun)} between {span}. Some could not be tested because {why or 'data was missing'}. {CD_MEANING} Rule: {rule}."
             items = [dict(contact_id=g["record_ids"].split(";")[0], time="", outcome="FAILED: " + GAP_TEXT.get(g["gap_type"], g["gap_type"].replace("_", " ")),
                           result=g["detail"]) for g in gaps]
+            items += [dict(contact_id=u["record_id"], time="", outcome="COULD NOT TEST: " + _cd_reasons([u["reason"]]),
+                           result=u["detail"]) for u in und]
             failed = {i["contact_id"] for i in items}
             seen = set(failed)
             for e in v["evidence_ids"].split(";"):

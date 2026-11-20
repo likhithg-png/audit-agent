@@ -47,6 +47,7 @@ their own out/ slot too, never colliding with the sample requests.
 """
 import json
 import threading
+import time
 import uuid
 from pathlib import Path
 
@@ -114,14 +115,41 @@ def _job(request_id: str) -> dict:
         return _jobs.setdefault(request_id, {"status": "idle", "log": [], "error": None})
 
 
+class _Cancelled(Exception):
+    """Raised inside a worker thread when the user pressed Stop."""
+
+
+# One audit run at a time: every run loads the big tables into memory, so several at
+# once (e.g. a batch of auto-started emails) would thrash. Later runs wait their turn.
+_RUN_SLOT = threading.Semaphore(1)
+
+
+def _is_cancelled(request_id: str) -> bool:
+    with _lock:
+        return bool(_jobs.get(request_id, {}).get("cancelled"))
+
+
+def _check_cancel(request_id: str):
+    if _is_cancelled(request_id):
+        raise _Cancelled()
+
+
 def _set(request_id: str, **kw):
     with _lock:
-        _jobs[request_id].update(kw)
+        job = _jobs[request_id]
+        if job.get("cancelled") and "status" in kw and kw["status"] != "cancelled":
+            kw.pop("status")  # a stopped run must stay stopped, whatever its thread does next
+        if kw.get("status") in ("done", "error", "cancelled") and not job.get("finished_at"):
+            kw["finished_at"] = time.time()
+        job.update(kw)
 
 
 def _append_log(request_id: str, msg: str):
     with _lock:
-        _jobs[request_id]["log"].append(msg)
+        job = _jobs[request_id]
+        if job.get("cancelled") and msg != "Stopped by user":
+            return  # a stopped run's log is frozen at the moment it was stopped
+        job["log"].append(msg)
 
 
 def _describe_tool_call(t: dict) -> str:
@@ -143,7 +171,7 @@ def _describe_tool_call(t: dict) -> str:
         shown = ", ".join(ids[:3]) + (f" +{len(ids) - 3} more" if len(ids) > 3 else "")
         return f"Checked {len(ids)} account ids exist: {shown}"
     if tool == "lookup_policy":
-        return f"Looked up {a.get('lender_id') or 'the lender'}'s policy rules"
+        return "Looked up the policy rules"
     if tool == "list_guidelines":
         return "Looked up the guideline catalogue"
     if tool == "run_sql":
@@ -194,8 +222,27 @@ def _auto_reply_with_clarification(request_id: str, clarification: str) -> None:
         inbox_runs.mark_error(message_id, f"could not auto-send the clarifying question: {e}")
 
 
-def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sample_file: str, source: str,
-             guideline_ids: list | None = None, recipient_name: str | None = None, use_agent: bool = True):
+def _execute(request_id: str, *args, **kw):
+    """Waits for the single run slot (so runs never pile up in memory), then runs the
+    pipeline. A run stopped while it waits never starts."""
+    waited = False
+    while not _RUN_SLOT.acquire(timeout=1):
+        if _is_cancelled(request_id):
+            return
+        if not waited:
+            _append_log(request_id, "Waiting for another run to finish...")
+            waited = True
+    try:
+        if _is_cancelled(request_id):
+            return
+        _execute_inner(request_id, *args, **kw)
+    finally:
+        _RUN_SLOT.release()
+
+
+def _execute_inner(request_id: str, text: str, lender_id: str | None, period: dict | None, sample_file: str,
+                   source: str, guideline_ids: list | None = None, recipient_name: str | None = None,
+                   use_agent: bool = True):
     """The one pipeline every entry point (sample picker / upload / Gmail)
     ultimately calls, just with a different source for `text`.
 
@@ -243,6 +290,7 @@ def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sa
         else:
             _append_log(request_id, "No request text -- using the selected guidelines")
             decomposed = decompose_from_guidelines(guideline_ids or [], request_id, lender_id, period, sample_file, source)
+        _check_cancel(request_id)
         decomposed_path = OUT_DIR / request_id / "checks.json"
         decomposed_path.parent.mkdir(parents=True, exist_ok=True)
         decomposed_path.write_text(json.dumps(decomposed, indent=2))
@@ -269,15 +317,19 @@ def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sa
             _append_log(request_id, f"Audit period: {pr['from']} to {pr['to']} "
                                      f"({'from the request' if decomposed['period_source'] == 'extracted' else 'as entered'})")
 
+        _check_cancel(request_id)
         _append_log(request_id, "Running checks against the sample...")
-        vdf = run(decomposed_path, tools=Tools(), verbose=False)
+        vdf = run(decomposed_path, tools=Tools(), verbose=False, should_stop=lambda: _is_cancelled(request_id))
+        _check_cancel(request_id)
         _append_log(request_id, f"Tested {vdf.account_id.nunique()} accounts")
 
         _append_log(request_id, "Building the evidence pack...")
         pack_paths = build_pack(request_id, decomposed_path)
+        _check_cancel(request_id)
 
         _append_log(request_id, "Drafting the response letter...")
         letter_result = draft_and_validate(request_id, decomposed_path, recipient_name=recipient_name)
+        _check_cancel(request_id)
 
         with _lock:
             _jobs[request_id]["result"] = dict(
@@ -292,7 +344,11 @@ def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sa
         _set(request_id, status="done")
         if request_id.startswith("GMAIL-"):
             inbox_runs.mark_needs_review(request_id.removeprefix("GMAIL-"))
+    except _Cancelled:
+        return  # /cancel already marked the run stopped and reset the inbox row
     except Exception as e:
+        if _is_cancelled(request_id):
+            return
         _set(request_id, status="error", error=str(e))
         _append_log(request_id, f"Error: {e}")
         if request_id.startswith("GMAIL-"):
@@ -301,13 +357,13 @@ def _execute(request_id: str, text: str, lender_id: str, period: dict | None, sa
 
 def _resolve_sample(request_id: str, lender_id: str | None, annexure_bytes: bytes | None, annexure_name: str | None,
                     request_text: str | None = None):
-    """Decide which accounts to test. Returns (lender_id, sample_file).
+    """Decide which accounts to test. Returns (None, sample_file).
 
-    - Annexure A attached (csv/xlsx with an account_id column): use exactly
-      those accounts. Every id is checked against audit.accounts; the lender
-      is inferred from them if not given, and must match if given (lender
-      policy overrides in D12 depend on it).
-    - Nothing attached: fall back to the chosen lender's built-in sample.
+    Accounts come from an attached Annexure A (csv/xlsx with an account_id
+    column) or from account ids named in the request text. Every id is checked
+    against audit.accounts. There is no run-level lender: accounts may belong to
+    any mix of lenders, and each account is judged against its own lender's
+    policy (the checks look the lender up per account).
     """
     import io
     import re
@@ -318,8 +374,6 @@ def _resolve_sample(request_id: str, lender_id: str | None, annexure_bytes: byte
         ids_from_text = list(dict.fromkeys(re.findall(r"\bACC\d+\b", request_text or "", flags=re.I)))
         ids_from_text = [a.upper() for a in ids_from_text]
         if not ids_from_text:
-            if lender_id in LENDER_SAMPLES:
-                return lender_id, LENDER_SAMPLES[lender_id]
             raise HTTPException(400, "no accounts to test -- attach an account list, or name the account ids "
                                      "(e.g. ACC100001) in the request")
     try:
@@ -353,21 +407,11 @@ def _resolve_sample(request_id: str, lender_id: str | None, annexure_bytes: byte
     missing = [a for a in ids if a not in found]
     if missing:
         raise HTTPException(400, f"{len(missing)} of {len(ids)} account ids are not in the dataset, e.g. {missing[:5]}")
-    lenders = sorted(set(found.values()))
-    if lender_id:
-        bad = [a for a, l in found.items() if l != lender_id]
-        if bad:
-            raise HTTPException(400, f"{len(bad)} accounts do not belong to lender {lender_id}, e.g. {bad[:5]}")
-    elif len(lenders) == 1:
-        lender_id = lenders[0]
-    else:
-        raise HTTPException(400, f"the accounts span several lenders {lenders} -- pick one lender or split the list")
-
     out = OUT_DIR / request_id
     out.mkdir(parents=True, exist_ok=True)
     path = out / "annexure_a.csv"
     pd.DataFrame({"sr_no": range(1, len(ids) + 1), "account_id": ids}).to_csv(path, index=False)
-    return lender_id, str(path)  # absolute: DATA_DIR / abs == abs
+    return None, str(path)  # absolute: DATA_DIR / abs == abs
 
 
 def _period_arg(period_from: str | None, period_to: str | None) -> dict | None:
@@ -391,7 +435,8 @@ def _start(request_id: str, background_tasks: BackgroundTasks, **kw):
     job = _job(request_id)
     if job["status"] == "running":
         raise HTTPException(409, "a run for this request is already in progress")
-    _set(request_id, status="running", log=[], error=None)
+    _set(request_id, status="running", log=[], error=None, cancelled=False,
+         started_at=time.time(), finished_at=None)
     background_tasks.add_task(_execute, request_id, **kw)
 
 
@@ -548,31 +593,49 @@ def _begin_gmail_run(message_id: str, background_tasks: BackgroundTasks, lender_
     return request_id
 
 
-def _try_autostart(message_id: str, background_tasks: BackgroundTasks) -> bool:
-    """Auto-starts a run with no human click -- but ONLY when the email actually
-    carries something to test against: either the body names account ids
-    (\\bACC\\d+\\b) or it attaches an Annexure A spreadsheet. There's no human in
-    this path to supply an account list, so an email with neither stays NEW for
-    manual handling rather than auto-starting a run that can only fail.
+def _auto_ask_for_accounts(message_id: str) -> None:
+    """An email above the score bar but with no account ids and no account list: there is
+    nothing to test yet, so the "run" is to ask for them -- through the same clarifying-
+    question path (and the same auto-reply on/off setting) the agent itself uses."""
+    request_id = f"GMAIL-{message_id}"
+    reply_meta = gmail_client.get_message_meta(message_id)
+    _job(request_id)
+    _set(request_id, status="running", log=[], error=None, cancelled=False, started_at=time.time(),
+         finished_at=None, reply_meta=reply_meta, replied=False)
+    run_results.save_reply_meta(request_id, reply_meta)
+    inbox_runs.mark_processing(message_id, request_id)
+    question = ("Thanks for your request. To run the audit I need to know which accounts to test. Please reply "
+                "with the account ids (for example ACC100001) in the email, or attach a list of account ids "
+                "as a CSV or Excel file.")
+    _append_log(request_id, "Decomposing the request...")
+    _append_log(request_id, "No account ids or account list found in the email")
+    _set(request_id, clarification=question, status="error",
+         error="The agent needs more information before it can run this request.")
+    _append_log(request_id, "Error: The agent needs more information before it can run this request.")
+    _auto_reply_with_clarification(request_id, question)
 
-    This gate is deliberately NOT just "Prism said it's an audit request":
-    Prism scores whether the PROSE reads like a real request, which says nothing
-    about whether the accounts to test are reachable. Dropping it would turn
-    "quietly not started" into a run that errors out on 'no accounts to test'.
+
+def _try_autostart(message_id: str, background_tasks: BackgroundTasks) -> bool:
+    """Auto-starts a run with no human click, for any email at or above the score bar
+    (inbox_runs.AUTOSTART_AT, 10%). If the email names account ids or attaches an account
+    list, the audit runs; if not, the agent asks the sender for them instead.
     Never lets one bad auto-start attempt break the whole /messages response."""
     import re
     try:
         text = gmail_client.get_message_text(message_id)
     except Exception:
         return False
-    if not re.search(r"\bACC\d+\b", text, re.I):
+    has_accounts = bool(re.search(r"\bACC\d+\b", text, re.I))
+    if not has_accounts:
         try:
-            if gmail_client.find_account_list(message_id) is None:
-                return False
+            has_accounts = gmail_client.find_account_list(message_id) is not None
         except Exception:
-            return False
+            has_accounts = False
     try:
-        _begin_gmail_run(message_id, background_tasks, text=text)
+        if has_accounts:
+            _begin_gmail_run(message_id, background_tasks, text=text)
+        else:
+            _auto_ask_for_accounts(message_id)
         return True
     except Exception:
         return False
@@ -588,10 +651,12 @@ def inbox_messages(background_tasks: BackgroundTasks, sync: bool = False):
     if sync:
         new = gmail_client.list_candidate_messages(skip_ids=inbox_runs.known_ids())
         inbox_runs.sync_new_messages(new)
-        for c in new:
-            row = inbox_runs.list_statuses([c["message_id"]]).get(c["message_id"], {})
-            if row.get("is_audit_request"):
-                _try_autostart(c["message_id"], background_tasks)
+        # Everything saved that is still untouched (never run, never stopped) and at or
+        # above the bar starts now -- new mail and anything the bar missed before.
+        for row in inbox_runs.list_saved(gmail_client.own_address()):
+            if (row["status"] == "NEW" and not row["request_id"] and row["is_audit_request"]
+                    and (row["confidence"] or 0) >= inbox_runs.AUTOSTART_AT):
+                _try_autostart(row["message_id"], background_tasks)
     return inbox_runs.list_saved(gmail_client.own_address())
 
 
@@ -665,7 +730,24 @@ def run_status(request_id: str):
     persisted = run_results.load(request_id) or {}
     return {"status": job["status"], "log": job["log"], "error": job["error"],
             "clarification": job.get("clarification"), "reply_to": (reply_meta or {}).get("from"),
-            "replied": job.get("replied", False) or bool(persisted.get("replied"))}
+            "replied": job.get("replied", False) or bool(persisted.get("replied")),
+            "started_at": job.get("started_at"), "finished_at": job.get("finished_at"),
+            "server_now": time.time()}
+
+
+@app.post("/api/requests/{request_id}/cancel")
+def cancel_run(request_id: str):
+    """Stop a run that is waiting or running. The worker thread cannot be killed
+    mid-call, so this marks the run stopped right away (the UI unlocks at once) and the
+    thread quits at its next checkpoint without saving anything."""
+    job = _job(request_id)
+    if job["status"] != "running":
+        raise HTTPException(409, "this run is not in progress")
+    _set(request_id, cancelled=True, status="cancelled")
+    _append_log(request_id, "Stopped by user")
+    if request_id.startswith("GMAIL-"):
+        inbox_runs.mark_stopped(request_id.removeprefix("GMAIL-"))
+    return run_status(request_id)
 
 
 @app.get("/api/requests/{request_id}/result")
